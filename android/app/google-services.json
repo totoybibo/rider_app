@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "832474366278",
+    "project_id": "uber-clone-c0f73",
+    "storage_bucket": "uber-clone-c0f73.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:832474366278:android:2e57c658ebe27715066547",
+        "android_client_info": {
+          "package_name": "app.totoybibo.rider_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "832474366278-rm6f0l4fcc96q3g7l8skr24esmmbudqu.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA_35szt8lTca-sbzbp8wx9LTk72MU0S48"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "832474366278-rm6f0l4fcc96q3g7l8skr24esmmbudqu.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
