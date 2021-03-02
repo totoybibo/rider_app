@@ -2,6 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:rider_app/constants.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:rider_app/main.dart';
+import 'main_screen.dart';
+import 'package:modal_progress_hud/modal_progress_hud.dart';
+import 'login_screen.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class RegistrationScreen extends StatefulWidget {
   static const id = 'register';
@@ -15,124 +20,150 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   TextEditingController phoneController = TextEditingController();
-  FToast toast;
-  void showToast(String msg) {
-    toast.showToast(
-      toastDuration: const Duration(seconds: 1),
-      child: Material(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        elevation: 10,
-        color: Colors.lightBlueAccent,
-        child: Center(
-          child: Text(
-            msg,
-            style: TextStyle(fontSize: 20, color: Colors.white),
-          ),
-        ),
-      ),
-    );
-  }
+  bool showSpinner = false;
+  void registerUser(BuildContext context) async {
+    setState(() => showSpinner = true);
+    try {
+      if (emailController.text.isEmpty) throw 'email required';
+      if (passwordController.text.isEmpty) throw 'password is required';
 
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    toast = FToast();
+      User usr = (await _auth
+              .createUserWithEmailAndPassword(
+                  email: emailController.text,
+                  password: passwordController.text)
+              .catchError((error) {
+        Fluttertoast.showToast(msg: error.toString());
+      }))
+          .user;
+
+      if (usr != null) {
+        Map userDataMap = {
+          'name': nameController.text,
+          'email': emailController.text,
+          'phone': phoneController.text,
+          'password': passwordController.text
+        };
+        userRef.child(usr.uid).set(userDataMap);
+        Fluttertoast.showToast(
+            msg: '${usr.email} created successfully.',
+            backgroundColor: Colors.lightBlueAccent,
+            gravity: ToastGravity.TOP);
+        Navigator.pushNamedAndRemoveUntil(
+            context, MainScreen.id, (route) => false);
+      }
+    } catch (e) {
+      Fluttertoast.showToast(
+          msg: e.toString(), backgroundColor: Colors.blueAccent);
+    } finally {
+      setState(() => showSpinner = false);
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    toast.init(context);
     return Scaffold(
-      backgroundColor: Colors.white,
-      body: Padding(
-        padding: const EdgeInsets.all(20.0),
-        child: Column(
-          children: [
-            SizedBox(height: 40),
-            Image.asset('images/logo.png',
-                width: 350, height: 350, alignment: Alignment.center),
-            SizedBox(height: 15),
-            Text(
-              'Register as Rider',
-              style: TextStyle(fontFamily: 'bolt-semibold', fontSize: 24),
-              textAlign: TextAlign.center,
-            ),
-            SizedBox(height: 1),
-            TextFormField(
-              controller: nameController,
-              style: TextStyle(fontSize: 14),
-              keyboardType: TextInputType.name,
-              decoration: kLoginInputDecoration.copyWith(labelText: 'Name'),
-            ),
-            TextFormField(
-              controller: emailController,
-              style: TextStyle(fontSize: 14),
-              keyboardType: TextInputType.emailAddress,
-              decoration: kLoginInputDecoration,
-            ),
-            TextFormField(
-              controller: phoneController,
-              style: TextStyle(fontSize: 14),
-              keyboardType: TextInputType.phone,
-              decoration: kLoginInputDecoration.copyWith(labelText: 'Phone'),
-            ),
-            TextFormField(
-              controller: passwordController,
-              style: TextStyle(fontSize: 14),
-              obscureText: true,
-              decoration: kLoginInputDecoration.copyWith(labelText: 'Password'),
-            ),
-            SizedBox(height: 10),
-            RaisedButton(
-              highlightColor: Colors.yellowAccent,
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20)),
-              color: Colors.yellow,
-              textColor: Colors.black,
-              child: Container(
-                height: 50,
-                child: Center(
-                  child: Text(
-                    'Register',
-                    style: TextStyle(
-                        fontFamily: 'bolt-semibold',
-                        fontSize: 18,
-                        color: Colors.black),
-                  ),
+      body: ModalProgressHUD(
+        inAsyncCall: showSpinner,
+        child: SingleChildScrollView(
+          padding: EdgeInsets.only(top: 20, left: 20, right: 20, bottom: 20),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              SizedBox(height: 30),
+              Hero(
+                tag: 'logo',
+                child: Image.asset('images/logo.png',
+                    width: 350, height: 350, alignment: Alignment.center),
+              ),
+              SizedBox(height: 5),
+              Text(
+                'Rider Registration',
+                style: TextStyle(fontFamily: 'bolt-semibold', fontSize: 24),
+                textAlign: TextAlign.start,
+              ),
+              SizedBox(height: 10),
+              TextFormField(
+                autocorrect: false,
+                enableSuggestions: false,
+                controller: nameController,
+                style: TextStyle(fontSize: 14),
+                keyboardType: TextInputType.name,
+                decoration: kLoginInputDecoration.copyWith(
+                    labelText: 'Name', prefixIcon: Icon(FontAwesomeIcons.user)),
+              ),
+              TextFormField(
+                autocorrect: false,
+                enableSuggestions: false,
+                controller: emailController,
+                style: TextStyle(fontSize: 14),
+                keyboardType: TextInputType.emailAddress,
+                decoration: kLoginInputDecoration.copyWith(
+                  labelText: 'Email',
+                  prefixIcon: Icon(FontAwesomeIcons.envelope),
+                ),
+                autovalidateMode: AutovalidateMode.onUserInteraction,
+                validator: (text) {
+                  if (text.isEmpty) return '';
+                  return null;
+                },
+              ),
+              TextFormField(
+                controller: phoneController,
+                style: TextStyle(fontSize: 14),
+                keyboardType: TextInputType.phone,
+                decoration: kLoginInputDecoration.copyWith(
+                  labelText: 'Phone',
+                  prefixIcon: Icon(FontAwesomeIcons.phone),
                 ),
               ),
-              onPressed: () async {
-                try {
-                  if (nameController.text.length < 4) throw 'invalid name';
-                  if (emailController.text.length < 5) throw 'invalid email';
-                  if (phoneController.text.length < 7)
-                    throw 'invalid phone number';
-                  if (passwordController.text.length < 5)
-                    throw 'invalid password';
-
-                  User usr = (await _auth.createUserWithEmailAndPassword(
-                          email: emailController.text,
-                          password: passwordController.text))
-                      .user;
-
-                  if (usr != null) print('${usr.email} now online.');
-                } catch (e) {
-                  showToast(e.toString());
-                }
-              },
-            ),
-            SizedBox(height: 5),
-            FlatButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              child: Text(
-                'Already have account? Login here',
-                style: TextStyle(color: Colors.blueAccent),
+              TextFormField(
+                controller: passwordController,
+                style: TextStyle(fontSize: 14),
+                obscureText: true,
+                decoration: kLoginInputDecoration.copyWith(
+                    labelText: 'Password',
+                    prefixIcon: Icon(FontAwesomeIcons.userLock)),
+                autovalidateMode: AutovalidateMode.onUserInteraction,
+                validator: (text) {
+                  if (text.isEmpty) return '';
+                  return null;
+                },
               ),
-            )
-          ],
+              SizedBox(height: 10),
+              RaisedButton(
+                highlightColor: Colors.yellowAccent,
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20)),
+                color: Colors.yellow,
+                textColor: Colors.black,
+                child: Container(
+                  height: 40,
+                  child: Center(
+                    child: Text(
+                      'Register',
+                      style: TextStyle(
+                          fontFamily: 'bolt-semibold',
+                          fontSize: 18,
+                          color: Colors.black),
+                    ),
+                  ),
+                ),
+                onPressed: () {
+                  registerUser(context);
+                },
+              ),
+              FlatButton(
+                onPressed: () {
+                  Navigator.pushNamedAndRemoveUntil(
+                      context, LoginScreen.id, (route) => false);
+                },
+                child: Text(
+                  'Already have account? Login here',
+                  style: TextStyle(color: Colors.blueAccent),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
