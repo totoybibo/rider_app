@@ -71,6 +71,14 @@ class _LoginScreenState extends State<LoginScreen>
   }
 
   @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    controller.dispose();
+    animation = null;
+  }
+
+  @override
   void initState() {
     // TODO: implement initState
     super.initState();

@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'login_screen.dart';
@@ -33,6 +34,13 @@ class _MainScreenState extends State<MainScreen> {
   GoogleMapController newGoogleMapController;
   String userDisplayName;
 
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    newGoogleMapController.dispose();
+  }
+
   void getUser() async {
     if (user != null) {
       await userRef.child(user.uid).once().then((snap) {
@@ -63,11 +71,43 @@ class _MainScreenState extends State<MainScreen> {
         child: RawMaterialButton(
           onPressed: () {
             setState(() {});
+            showModalBottomSheet(
+                context: context,
+                builder: (context) {
+                  return Container(
+                    color: Color(0xFF6a6a6a),
+                    child: Container(
+                      height: 320,
+                      width: double.infinity,
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: kBorderRadius,
+                        boxShadow: [kBoxShadow],
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 18, horizontal: 24),
+                        child: Column(
+                          children: [
+                            SizedBox(height: 10),
+                            Text('Hi there, $userDisplayName',
+                                style: TextStyle(
+                                    fontSize: 18, color: Colors.blueAccent)),
+                            Text('Where to?',
+                                style: TextStyle(
+                                    fontSize: 24,
+                                    fontFamily: 'bolt-semibold',
+                                    color: Colors.blueAccent)),
+                          ],
+                        ),
+                      ),
+                    ),
+                  );
+                });
           },
           constraints: BoxConstraints.tightFor(width: 80, height: 80),
           shape: CircleBorder(),
-          elevation: 10,
-          fillColor: Colors.grey.shade700,
+          fillColor: Colors.lightBlueAccent,
           highlightColor: Colors.blueAccent,
           child: Icon(
             FontAwesomeIcons.search,
@@ -76,12 +116,10 @@ class _MainScreenState extends State<MainScreen> {
           ),
         ),
       ),
-      // appBar: AppBar(
-      //   title: Text('Main Screen'),
-      // ),
       body: Stack(
         children: [
           GoogleMap(
+            myLocationEnabled: true,
             initialCameraPosition: MainScreen._kGooglePlex,
             myLocationButtonEnabled: false,
             onMapCreated: (GoogleMapController controller) {
@@ -89,36 +127,23 @@ class _MainScreenState extends State<MainScreen> {
               newGoogleMapController = controller;
             },
           ),
-          // Positioned(
-          //   left: 0,
-          //   right: 0,
-          //   bottom: 0,
-          //   child: Container(
-          //     height: 320,
-          //     decoration: BoxDecoration(
-          //       color: Colors.white,
-          //       borderRadius: kBorderRadius,
-          //       boxShadow: [kBoxShadow],
-          //     ),
-          //     child: Padding(
-          //       padding:
-          //           const EdgeInsets.symmetric(vertical: 18, horizontal: 24),
-          //       child: Column(
-          //         children: [
-          //           SizedBox(height: 10),
-          //           Text('Hi there, $userDisplayName',
-          //               style:
-          //                   TextStyle(fontSize: 18, color: Colors.blueAccent)),
-          //           Text('Where to?',
-          //               style: TextStyle(
-          //                   fontSize: 24,
-          //                   fontFamily: 'bolt-semibold',
-          //                   color: Colors.blueAccent)),
-          //         ],
-          //       ),
-          //     ),
-          //   ),
-          // )
+          Positioned(
+            top: MediaQuery.of(context).viewInsets.top + 50,
+            right: MediaQuery.of(context).viewInsets.right + 10,
+            child: RawMaterialButton(
+                onPressed: () {
+                  setState(() {});
+                  Fluttertoast.showToast(
+                      msg: 'Goodbye $userDisplayName',
+                      backgroundColor: Colors.lightBlueAccent,
+                      gravity: ToastGravity.TOP);
+                  _auth.signOut();
+                  Navigator.pushNamedAndRemoveUntil(
+                      context, LoginScreen.id, (route) => false);
+                },
+                highlightColor: Colors.blueAccent,
+                child: Icon(Icons.close, size: 40, color: Colors.white)),
+          ),
         ],
       ),
     );
