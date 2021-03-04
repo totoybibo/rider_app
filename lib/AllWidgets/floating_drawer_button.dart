@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:rider_app/constants.dart';
 
 class FloatingDrawerButton extends StatelessWidget {
   final Function onTap;
@@ -13,9 +13,11 @@ class FloatingDrawerButton extends StatelessWidget {
         constraints: BoxConstraints.tightFor(width: 50, height: 50),
         elevation: 8,
         onPressed: onTap,
-        shape: RoundedRectangleBorder(),
-        highlightColor: Colors.lightBlueAccent.shade200,
-        child: Icon(Icons.menu, size: 40, color: Color(0xFFeeaa46)),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(8),
+        ),
+        highlightColor: Colors.lightBlueAccent,
+        child: Icon(Icons.menu, size: 40, color: kDarkModeColor),
       ),
     );
   }

@@ -20,7 +20,9 @@ class Main extends StatelessWidget {
     return MaterialApp(
       title: 'Rider',
       theme: ThemeData(
-          textTheme: TextTheme(),
+          textTheme: TextTheme(
+            bodyText2: TextStyle(color: Colors.grey),
+          ),
           fontFamily: 'bolt-regular',
           brightness: Brightness.dark,
           primaryColor: Colors.blueAccent,

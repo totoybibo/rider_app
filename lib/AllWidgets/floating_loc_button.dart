@@ -1,19 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:rider_app/constants.dart';
 
-class FloatingExitButton extends StatelessWidget {
+class FloatingLocButton extends StatelessWidget {
   final Function onTap;
-  FloatingExitButton({this.onTap});
+  FloatingLocButton({this.onTap});
   @override
   Widget build(BuildContext context) {
     return Positioned(
-      top: MediaQuery.of(context).viewInsets.top + 50,
-      right: MediaQuery.of(context).viewInsets.right + 10,
+      top: MediaQuery.of(context).viewInsets.top + 190,
+      left: MediaQuery.of(context).viewInsets.left + 10,
       child: RawMaterialButton(
         constraints: BoxConstraints.tightFor(width: 50, height: 50),
         onPressed: onTap,
         shape: CircleBorder(),
+        fillColor: kDarkModeColor,
         highlightColor: Colors.lightBlueAccent.shade200,
-        child: Icon(Icons.close, size: 40, color: Color(0xFFeeaa46)),
+        child: Icon(Icons.my_location, size: 40, color: Color(0xFFeeaa46)),
       ),
     );
   }

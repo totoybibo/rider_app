@@ -30,7 +30,10 @@ const kInputDecoration = InputDecoration(
     border: InputBorder.none,
     hintText: 'Where to?',
     hintStyle: TextStyle(
-        color: Colors.green, fontSize: 18, fontWeight: FontWeight.bold));
+        fontFamily: 'bolt-semibold',
+        color: Colors.green,
+        fontSize: 20,
+        fontWeight: FontWeight.bold));
 const kHollandVillage = CameraPosition(
   target: LatLng(1.3091294601034407, 103.7944606046135),
   zoom: 14.4746,

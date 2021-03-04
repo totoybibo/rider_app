@@ -9,7 +9,7 @@ import 'package:rider_app/constants.dart';
 import 'dart:async';
 import 'package:rider_app/main.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:rider_app/AllWidgets/floating_exitbutton.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:rider_app/AllWidgets/location_input.dart';
 
 class MainScreen extends StatefulWidget {
@@ -20,15 +20,21 @@ class MainScreen extends StatefulWidget {
   _MainScreenState createState() => _MainScreenState();
 }
 
-class _MainScreenState extends State<MainScreen> {
+class _MainScreenState extends State<MainScreen>
+    with SingleTickerProviderStateMixin {
+  AnimationController controller;
+  Animation animation;
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final User user = FirebaseAuth.instance.currentUser;
   final TextEditingController textController = TextEditingController();
   Completer<GoogleMapController> gMapController = Completer();
   GoogleMapController newGoogleMapController;
   String userDisplayName;
-  int bottomFlex = 1;
+  bool isBSOpen = false;
   GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
+  GlobalKey bottomSheetKey = GlobalKey();
+  GlobalKey bottomSheetBtn = GlobalKey();
+
   @override
   void dispose() {
     // TODO: implement dispose
@@ -62,50 +68,48 @@ class _MainScreenState extends State<MainScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       key: scaffoldKey,
-      drawer: MainScreenDrawer(username: userDisplayName, user: user),
+      drawer: MainScreenDrawer(
+        username: userDisplayName,
+        user: user,
+        signOut: () {
+          Fluttertoast.showToast(
+              msg: 'Goodbye $userDisplayName',
+              backgroundColor: Colors.lightBlueAccent,
+              gravity: ToastGravity.TOP);
+          _auth.signOut();
+          Navigator.pushNamedAndRemoveUntil(
+              context, LoginScreen.id, (route) => false);
+        },
+      ),
       body: Stack(
         children: [
-          Column(
-            children: [
-              Expanded(
-                flex: 4,
-                child: GoogleMap(
-                  myLocationEnabled: true,
-                  initialCameraPosition: MainScreen._kLocationPosition,
-                  myLocationButtonEnabled: true,
-                  onMapCreated: (GoogleMapController controller) {
-                    gMapController.complete(controller);
-                    newGoogleMapController = controller;
-                  },
-                ),
-              ),
-              Expanded(
-                flex: bottomFlex,
-                child: LocationInput(
-                  username: userDisplayName,
-                  bottomFlex: bottomFlex,
-                  textFormTap: () => setState(() => bottomFlex = 3),
-                  collapseTap: () =>
-                      setState(() => bottomFlex = bottomFlex == 1 ? 3 : 1),
-                  addHome: () => setState(() {}),
-                  addWork: () => setState(() {}),
-                ),
-              )
-            ],
-          ),
-          FloatingExitButton(
-            onTap: () {
-              Fluttertoast.showToast(
-                  msg: 'Goodbye $userDisplayName',
-                  backgroundColor: Colors.lightBlueAccent,
-                  gravity: ToastGravity.TOP);
-              _auth.signOut();
-              Navigator.pushNamedAndRemoveUntil(
-                  context, LoginScreen.id, (route) => false);
+          GoogleMap(
+            myLocationEnabled: true,
+            initialCameraPosition: MainScreen._kLocationPosition,
+            myLocationButtonEnabled: false,
+            onMapCreated: (GoogleMapController controller) {
+              gMapController.complete(controller);
+              newGoogleMapController = controller;
             },
           ),
           FloatingDrawerButton(
             onTap: () => scaffoldKey.currentState.openDrawer(),
+          ),
+          Positioned(
+            key: bottomSheetKey,
+            height: isBSOpen ? MediaQuery.of(context).size.height / 2 : 100,
+            bottom: MediaQuery.of(context).viewInsets.bottom,
+            left: MediaQuery.of(context).viewInsets.left,
+            right: MediaQuery.of(context).viewInsets.right,
+            child: LocationInput(
+              username: userDisplayName,
+              isBSOpen: isBSOpen,
+              searchTap: () {},
+              textFormTap: () => setState(() => isBSOpen = true),
+              collapseTap: () => setState(() => isBSOpen = !isBSOpen),
+              addHome: () => setState(() {}),
+              addWork: () => setState(() {}),
+            ),
           ),
         ],
       ),

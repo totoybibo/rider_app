@@ -7,7 +7,8 @@ import 'package:rider_app/AllWidgets/divider.dart';
 class MainScreenDrawer extends StatelessWidget {
   final String username;
   final User user;
-  MainScreenDrawer({this.username, this.user});
+  final Function signOut;
+  MainScreenDrawer({this.username, this.user, this.signOut});
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -80,7 +81,7 @@ class MainScreenDrawer extends StatelessWidget {
               ),
             ),
             RawMaterialButton(
-              onPressed: () {},
+              onPressed: signOut,
               constraints: kBoxConstraints,
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8)),

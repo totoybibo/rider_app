@@ -8,13 +8,20 @@ class TabButtons extends StatefulWidget {
   _TabButtonsState createState() => _TabButtonsState();
 }
 
-class _TabButtonsState extends State<TabButtons> {
-  int _selectedIndex;
+class _TabButtonsState extends State<TabButtons>
+    with SingleTickerProviderStateMixin {
+  int _selectedIndex = 1;
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
       padding: EdgeInsets.only(left: 5, right: 5),
-      height: 30,
       child: Column(
         children: [
           Row(
@@ -34,7 +41,7 @@ class _TabButtonsState extends State<TabButtons> {
                   ),
                   onPressed: () => setState(() => _selectedIndex = 1),
                   child: Text(
-                    'Menu',
+                    'Favorites',
                     style: TextStyle(
                         fontWeight: _selectedIndex == 1
                             ? FontWeight.bold
@@ -57,7 +64,7 @@ class _TabButtonsState extends State<TabButtons> {
                   ),
                   onPressed: () => setState(() => _selectedIndex = 2),
                   child: Text(
-                    'List',
+                    'Result',
                     style: TextStyle(
                         fontWeight: _selectedIndex == 2
                             ? FontWeight.bold
@@ -65,12 +72,16 @@ class _TabButtonsState extends State<TabButtons> {
                         color: Colors.grey),
                   ),
                 ),
-              )
+              ),
             ],
           ),
+          HDividerWidget(),
           Container(
-            child: ListInputMenus(addWork: () {}, addHome: () {}),
-          )
+            child: ListInputMenus(
+              addWork: () {},
+              addHome: () {},
+            ),
+          ),
         ],
       ),
     );
@@ -97,7 +108,7 @@ class ListInputMenus extends StatelessWidget {
           onPressed: addWork,
           child: kFavoriteListItem,
         ),
-        DividerWidget(),
+        HDividerWidget(),
         RawMaterialButton(
           constraints: kBoxConstraints,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
@@ -105,7 +116,7 @@ class ListInputMenus extends StatelessWidget {
           onPressed: addHome,
           child: kHomeListItem,
         ),
-        DividerWidget(),
+        HDividerWidget(),
         RawMaterialButton(
           constraints: kBoxConstraints,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),

@@ -6,16 +6,17 @@ import 'tab_buttons.dart';
 
 class LocationInput extends StatelessWidget {
   final String username;
-  final int bottomFlex;
-  final TextEditingController controller;
+  final bool isBSOpen;
+
+  final Function searchTap;
   final Function textFormTap;
   final Function collapseTap;
   final Function addHome;
   final Function addWork;
   LocationInput(
       {this.username,
-      this.bottomFlex,
-      this.controller,
+      this.isBSOpen,
+      this.searchTap,
       this.textFormTap,
       this.collapseTap,
       this.addHome,
@@ -32,48 +33,47 @@ class LocationInput extends StatelessWidget {
       child: Column(
         children: [
           Padding(
-            padding:
-                const EdgeInsets.only(top: 10, left: 10, right: 10, bottom: 0),
+            padding: const EdgeInsets.all(8),
             child: Container(
               decoration: BoxDecoration(
-                  color: Colors.grey.shade300,
-                  borderRadius: BorderRadius.circular(10)),
+                  color: Colors.white, borderRadius: BorderRadius.circular(10)),
               child: ListTile(
+                leading: GestureDetector(
+                  onTap: searchTap,
+                  child: Icon(
+                    FontAwesomeIcons.searchLocation,
+                    color: kPrimaryColor,
+                    size: 35,
+                  ),
+                ),
                 trailing: GestureDetector(
                   onTap: collapseTap,
                   child: Icon(
-                    bottomFlex == 1
+                    !isBSOpen
                         ? FontAwesomeIcons.chevronCircleUp
                         : FontAwesomeIcons.chevronCircleDown,
-                    color: Colors.blue,
-                    size: 30,
+                    color: kPrimaryColor,
+                    size: 35,
                   ),
-                ),
-                leading: Icon(
-                  FontAwesomeIcons.searchLocation,
-                  color: Colors.blueAccent,
-                  size: 30,
                 ),
                 title: TextFormField(
                   style: TextStyle(
-                      fontWeight: FontWeight.w300,
-                      color: Colors.black,
-                      fontSize: 18),
+                      fontFamily: 'bolt-semibold',
+                      fontWeight: FontWeight.bold,
+                      color: kDarkModeColor,
+                      fontSize: 20),
                   onFieldSubmitted: (value) => print(value),
-                  controller: controller,
                   onTap: textFormTap,
                   autocorrect: false,
                   enableSuggestions: false,
                   keyboardType: TextInputType.text,
-                  decoration: kInputDecoration.copyWith(
-                      hintText: 'Where to $username?'),
+                  decoration: kInputDecoration.copyWith(hintText: 'Where to?'),
                 ),
               ),
             ),
           ),
           Container(
-            child:
-                bottomFlex == 1 ? Container() : Expanded(child: TabButtons()),
+            child: isBSOpen ? Expanded(child: TabButtons()) : Container(),
           ),
         ],
       ),
