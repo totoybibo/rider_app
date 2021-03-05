@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:rider_app/AllWidgets/location_input.dart';
 import 'package:rider_app/constants.dart';
-import 'divider.dart';
+import 'package:rider_app/AllWidgets/component_widgets.dart';
 
 class TabButtons extends StatefulWidget {
   @override

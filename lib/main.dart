@@ -4,6 +4,7 @@ import 'package:rider_app/AllScreens/login_screen.dart';
 import 'package:rider_app/AllScreens/main_screen.dart';
 import 'package:rider_app/AllScreens/register_screen.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:rider_app/constants.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -20,6 +21,14 @@ class Main extends StatelessWidget {
     return MaterialApp(
       title: 'Rider',
       theme: ThemeData(
+          iconTheme: IconThemeData(
+            color: kPrimaryColor,
+            size: 30,
+          ),
+          primaryIconTheme: IconThemeData(
+            color: kDarkModeColor,
+            size: 30,
+          ),
           textTheme: TextTheme(
             bodyText2: TextStyle(color: Colors.grey),
           ),

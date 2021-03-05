@@ -1,7 +1,7 @@
 import 'package:rider_app/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'divider.dart';
+import 'package:rider_app/AllWidgets/component_widgets.dart';
 import 'tab_buttons.dart';
 
 class LocationInput extends StatelessWidget {
@@ -40,21 +40,17 @@ class LocationInput extends StatelessWidget {
               child: ListTile(
                 leading: GestureDetector(
                   onTap: searchTap,
-                  child: Icon(
-                    FontAwesomeIcons.searchLocation,
-                    color: kPrimaryColor,
-                    size: 35,
-                  ),
+                  child:
+                      ThemedIcon(context, FontAwesomeIcons.searchLocation, 35),
                 ),
                 trailing: GestureDetector(
                   onTap: collapseTap,
-                  child: Icon(
-                    !isBSOpen
-                        ? FontAwesomeIcons.chevronCircleUp
-                        : FontAwesomeIcons.chevronCircleDown,
-                    color: kPrimaryColor,
-                    size: 35,
-                  ),
+                  child: ThemedIcon(
+                      context,
+                      !isBSOpen
+                          ? FontAwesomeIcons.chevronCircleUp
+                          : FontAwesomeIcons.chevronCircleDown,
+                      35),
                 ),
                 title: TextFormField(
                   style: TextStyle(

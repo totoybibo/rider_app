@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:rider_app/constants.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:rider_app/AllWidgets/divider.dart';
+import 'package:rider_app/AllWidgets/component_widgets.dart';
 
 class MainScreenDrawer extends StatelessWidget {
   final String username;
@@ -36,61 +34,41 @@ class MainScreenDrawer extends StatelessWidget {
               ),
             ),
             SizedBox(height: 12),
-            RawMaterialButton(
-              onPressed: () {},
-              constraints: kBoxConstraints,
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8)),
-              highlightColor: Colors.lightBlueAccent,
+            RMaterialButton(
+              onTap: () {},
               child: ListTile(
-                leading: Icon(Icons.star, color: kPrimaryColor),
+                leading: ThemedIcon(context, Icons.star),
                 title: Text('Favorites', style: TextStyle(fontSize: 16)),
               ),
             ),
-            RawMaterialButton(
-              onPressed: () {},
-              constraints: kBoxConstraints,
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8)),
-              highlightColor: Colors.lightBlueAccent,
+            RMaterialButton(
+              onTap: () {},
               child: ListTile(
-                leading: Icon(Icons.history, color: kPrimaryColor),
+                leading: ThemedIcon(context, Icons.history),
                 title: Text('History', style: TextStyle(fontSize: 16)),
               ),
             ),
-            RawMaterialButton(
-              onPressed: () {},
-              constraints: kBoxConstraints,
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8)),
-              highlightColor: Colors.lightBlueAccent,
+            RMaterialButton(
+              onTap: () {},
               child: ListTile(
-                leading: Icon(Icons.person, color: kPrimaryColor),
+                leading: ThemedIcon(context, Icons.person),
                 title: Text('Visit Profile', style: TextStyle(fontSize: 16)),
               ),
             ),
-            RawMaterialButton(
-              onPressed: () {},
-              constraints: kBoxConstraints,
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8)),
-              highlightColor: Colors.lightBlueAccent,
+            RMaterialButton(
+              onTap: () {},
               child: ListTile(
-                leading: Icon(Icons.info, color: kPrimaryColor),
+                leading: ThemedIcon(context, Icons.info),
                 title: Text('About', style: TextStyle(fontSize: 16)),
               ),
             ),
-            RawMaterialButton(
-              onPressed: signOut,
-              constraints: kBoxConstraints,
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8)),
-              highlightColor: Colors.lightBlueAccent,
+            RMaterialButton(
+              onTap: signOut,
               child: ListTile(
-                leading: Icon(Icons.logout, color: kPrimaryColor),
+                leading: ThemedIcon(context, Icons.logout),
                 title: Text('Sign Out', style: TextStyle(fontSize: 16)),
               ),
-            ),
+            )
           ],
         ),
       ),

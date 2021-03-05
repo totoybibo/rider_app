@@ -7,6 +7,7 @@ import 'main_screen.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'login_screen.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:rider_app/AllWidgets/component_widgets.dart';
 
 class RegistrationScreen extends StatefulWidget {
   static const id = 'register';
@@ -89,7 +90,8 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                 style: TextStyle(fontSize: 14),
                 keyboardType: TextInputType.name,
                 decoration: kLoginInputDecoration.copyWith(
-                    labelText: 'Name', prefixIcon: Icon(FontAwesomeIcons.user)),
+                    labelText: 'Name',
+                    prefixIcon: ThemedIcon(context, FontAwesomeIcons.user)),
               ),
               TextFormField(
                 autocorrect: false,
@@ -99,7 +101,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                 keyboardType: TextInputType.emailAddress,
                 decoration: kLoginInputDecoration.copyWith(
                   labelText: 'Email',
-                  prefixIcon: Icon(FontAwesomeIcons.envelope),
+                  prefixIcon: ThemedIcon(context, FontAwesomeIcons.envelope),
                 ),
                 autovalidateMode: AutovalidateMode.onUserInteraction,
                 validator: (text) {
@@ -113,7 +115,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                 keyboardType: TextInputType.phone,
                 decoration: kLoginInputDecoration.copyWith(
                   labelText: 'Phone',
-                  prefixIcon: Icon(FontAwesomeIcons.phone),
+                  prefixIcon: ThemedIcon(context, FontAwesomeIcons.phone),
                 ),
               ),
               TextFormField(
@@ -122,7 +124,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                 obscureText: true,
                 decoration: kLoginInputDecoration.copyWith(
                     labelText: 'Password',
-                    prefixIcon: Icon(FontAwesomeIcons.userLock)),
+                    prefixIcon: ThemedIcon(context, FontAwesomeIcons.userLock)),
                 autovalidateMode: AutovalidateMode.onUserInteraction,
                 validator: (text) {
                   if (text.isEmpty) return '';

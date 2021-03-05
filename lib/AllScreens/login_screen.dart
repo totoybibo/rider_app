@@ -9,6 +9,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'dart:ui';
+import 'package:rider_app/AllWidgets/component_widgets.dart';
 
 class LoginScreen extends StatefulWidget {
   static const id = 'login';
@@ -120,7 +121,7 @@ class _LoginScreenState extends State<LoginScreen>
                   style: TextStyle(fontSize: 14),
                   keyboardType: TextInputType.emailAddress,
                   decoration: kLoginInputDecoration.copyWith(
-                    prefixIcon: Icon(Icons.email),
+                    prefixIcon: ThemedIcon(context, Icons.email),
                     suffixIcon: GestureDetector(
                       child: kInfoIcon,
                       onTap: () {
@@ -138,7 +139,7 @@ class _LoginScreenState extends State<LoginScreen>
                   style: TextStyle(fontSize: 14),
                   obscureText: true,
                   decoration: kLoginInputDecoration.copyWith(
-                    prefixIcon: Icon(FontAwesomeIcons.userLock),
+                    prefixIcon: ThemedIcon(context, FontAwesomeIcons.userLock),
                     suffixIcon: GestureDetector(
                       child: kInfoIcon,
                       onTap: () {

@@ -9,7 +9,6 @@ import 'package:rider_app/constants.dart';
 import 'dart:async';
 import 'package:rider_app/main.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:rider_app/AllWidgets/location_input.dart';
 
 class MainScreen extends StatefulWidget {
@@ -98,7 +97,7 @@ class _MainScreenState extends State<MainScreen>
           Positioned(
             key: bottomSheetKey,
             height: isBSOpen ? MediaQuery.of(context).size.height / 2 : 100,
-            bottom: MediaQuery.of(context).viewInsets.bottom,
+            bottom: 0,
             left: MediaQuery.of(context).viewInsets.left,
             right: MediaQuery.of(context).viewInsets.right,
             child: LocationInput(
