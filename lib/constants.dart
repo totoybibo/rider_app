@@ -41,6 +41,7 @@ const kDefaultCameraPos = CameraPosition(
 );
 //const kLatLng = LatLng(37.42796133580664, -122.085749655962); //Google Headquarters
 const String googleMapKey = 'AIzaSyA_35szt8lTca-sbzbp8wx9LTk72MU0S48';
+
 const kBorderRadius = BorderRadius.only(
     topLeft: Radius.circular(20), topRight: Radius.circular(20));
 const kBoxShadow = BoxShadow(

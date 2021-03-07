@@ -14,17 +14,7 @@ class HelperMethods {
     if (response == 'nodata') {
       address = 'Address Unknown';
     } else {
-      List<dynamic> addressComponents =
-          response['results'][0]['address_components'];
-      List<String> safeAddress = [];
-      if (addressComponents != null && addressComponents.length > 1) {
-        for (int i = 1; i < addressComponents.length; i++) {
-          String value = addressComponents[i]['long_name'];
-          safeAddress.add(value);
-        }
-      }
-
-      address = safeAddress.join(',');
+      address = response['results'][0]['formatted_address'];
       placeId = response['results'][0]['place_id'];
     }
     return Address(

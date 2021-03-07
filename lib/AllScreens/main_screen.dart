@@ -2,23 +2,21 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:rider_app/AllWidgets/main_screen_drawer.dart';
-import 'package:rider_app/AllWidgets/floating_drawer_button.dart';
-import 'package:rider_app/AllWidgets/tab_buttons.dart';
+import 'package:rider_app/AllWidgets/floating_buttons.dart';
 import 'login_screen.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:rider_app/constants.dart';
 import 'dart:async';
 import 'package:rider_app/main.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:rider_app/AllWidgets/location_input.dart';
+import 'package:rider_app/AllWidgets/search_location.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:rider_app/AllWidgets/floating_loc_button.dart';
 import 'package:rider_app/Helpers/helper_methods.dart';
 import 'package:rider_app/Models/location_model.dart';
 import 'package:provider/provider.dart';
 import 'package:rider_app/DataHandler/app_data.dart';
-import 'package:rider_app/DataHandler/app_data.dart';
 import 'package:keyboard_visibility/keyboard_visibility.dart';
+import 'package:rider_app/Helpers/httprequest.dart';
 
 class MainScreen extends StatefulWidget {
   static const id = 'main';
@@ -31,17 +29,17 @@ class MainScreen extends StatefulWidget {
 class _MainScreenState extends State<MainScreen> {
   //#region Variables
   Position currentPosition;
-  AnimationController controller;
-  Animation animation;
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final User user = FirebaseAuth.instance.currentUser;
   final TextEditingController textController = TextEditingController();
   Completer<GoogleMapController> gMapController = Completer();
   GoogleMapController newGoogleMapController;
   String userDisplayName;
-  bool isBSOpen = false;
+  bool isBSOpen = true;
   GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
-  String address;
+  GlobalKey<ScaffoldState> bottomKey = GlobalKey<ScaffoldState>();
+  Address currentLocation;
+  String currentPickUpLocation = '';
   //#endregion
 
   //#region Methods
@@ -59,6 +57,8 @@ class _MainScreenState extends State<MainScreen> {
     Address location = await HelperMethods.searchCoordinates(position, 'home');
 
     Provider.of<AppData>(context, listen: false).pickUpLocation = location;
+    currentLocation = location;
+    setState(() => currentPickUpLocation = currentLocation.address);
   }
 
   void getUser() async {
@@ -91,6 +91,23 @@ class _MainScreenState extends State<MainScreen> {
       'longitude': address.longitude
     };
     homeRef.child(user.uid).child(address.placeId).set(dataMap);
+  }
+
+  void destinationPosition(String placeId) async {
+    String url =
+        'https://maps.googleapis.com/maps/api/place/details/json?place_id=$placeId&fields=geometry&key=$googleMapKey';
+    dynamic resp = await HTTPRequest.getRequest(url);
+    if (resp['status'] == 'OK') {
+      double lat = resp['result']['geometry']['location']['lat'];
+      double lng = resp['result']['geometry']['location']['lng'];
+      LatLng latLngPosition = LatLng(lat, lng);
+      CameraPosition cameraPosition =
+          CameraPosition(target: latLngPosition, zoom: 14);
+      newGoogleMapController
+          .animateCamera(CameraUpdate.newCameraPosition(cameraPosition));
+
+      setState(() => isBSOpen = false);
+    }
   }
 
   //#endregion
@@ -143,14 +160,19 @@ class _MainScreenState extends State<MainScreen> {
               locationPosition(context);
             },
           ),
-          FloatingDrawerButton(
+          DrawerButton(
             onTap: () => scaffoldKey.currentState.openDrawer(),
           ),
-          FloatingLocButton(
+          HomeButton(
             onTap: () => locationPosition(context),
           ),
+          ToggleButton(
+            onTap: () => setState(() => isBSOpen = !isBSOpen),
+            isBSOpen: isBSOpen,
+          ),
           Positioned(
-            height: isBSOpen ? MediaQuery.of(context).size.height / 2 : 100,
+            key: bottomKey,
+            height: isBSOpen ? MediaQuery.of(context).size.height / 1.8 : 170,
             bottom: 0,
             left: MediaQuery.of(context).viewInsets.left,
             right: MediaQuery.of(context).viewInsets.right,
@@ -158,23 +180,12 @@ class _MainScreenState extends State<MainScreen> {
               decoration: BoxDecoration(
                 color: kDarkModeColor,
               ),
-              child: Column(
-                children: [
-                  LocationInput(
-                    username: userDisplayName,
-                    isBSOpen: isBSOpen,
-                    address: '',
-                    searchTap: () {},
-                    textFormTap: () => setState(() => isBSOpen = true),
-                    collapseTap: () => setState(() => isBSOpen = !isBSOpen),
-                  ),
-                  isBSOpen
-                      ? TabButtons(
-                          addFavorites: () {},
-                          addHome: () => addHome(context),
-                          addWork: () {})
-                      : Container(),
-                ],
+              child: SearchLocation(
+                username: userDisplayName,
+                isBSOpen: isBSOpen,
+                currentLocation: currentPickUpLocation,
+                textFormTap: () => setState(() => isBSOpen = true),
+                placesTap: (value) => destinationPosition(value),
               ),
             ),
           ),
