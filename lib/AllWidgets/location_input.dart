@@ -4,24 +4,27 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:rider_app/AllWidgets/component_widgets.dart';
 import 'tab_buttons.dart';
 
-class LocationInput extends StatelessWidget {
+class LocationInput extends StatefulWidget {
   final String username;
   final bool isBSOpen;
-
+  final String address;
   final Function searchTap;
   final Function textFormTap;
   final Function collapseTap;
-  final Function addHome;
-  final Function addWork;
-  LocationInput(
-      {this.username,
-      this.isBSOpen,
-      this.searchTap,
-      this.textFormTap,
-      this.collapseTap,
-      this.addHome,
-      this.addWork});
+  LocationInput({
+    @required this.username,
+    @required this.isBSOpen,
+    @required this.address,
+    @required this.searchTap,
+    @required this.textFormTap,
+    @required this.collapseTap,
+  });
 
+  @override
+  _LocationInputState createState() => _LocationInputState();
+}
+
+class _LocationInputState extends State<LocationInput> {
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -30,48 +33,41 @@ class LocationInput extends StatelessWidget {
         color: kDarkModeColor,
         boxShadow: [kBoxShadow],
       ),
-      child: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(8),
-            child: Container(
-              decoration: BoxDecoration(
-                  color: Colors.white, borderRadius: BorderRadius.circular(10)),
-              child: ListTile(
-                leading: GestureDetector(
-                  onTap: searchTap,
-                  child:
-                      ThemedIcon(context, FontAwesomeIcons.searchLocation, 35),
-                ),
-                trailing: GestureDetector(
-                  onTap: collapseTap,
-                  child: ThemedIcon(
-                      context,
-                      !isBSOpen
-                          ? FontAwesomeIcons.chevronCircleUp
-                          : FontAwesomeIcons.chevronCircleDown,
-                      35),
-                ),
-                title: TextFormField(
-                  style: TextStyle(
-                      fontFamily: 'bolt-semibold',
-                      fontWeight: FontWeight.bold,
-                      color: kDarkModeColor,
-                      fontSize: 20),
-                  onFieldSubmitted: (value) => print(value),
-                  onTap: textFormTap,
-                  autocorrect: false,
-                  enableSuggestions: false,
-                  keyboardType: TextInputType.text,
-                  decoration: kInputDecoration.copyWith(hintText: 'Where to?'),
-                ),
-              ),
+      child: Padding(
+        padding: const EdgeInsets.all(8),
+        child: Container(
+          decoration: BoxDecoration(
+              color: Colors.white, borderRadius: BorderRadius.circular(10)),
+          child: ListTile(
+            leading: GestureDetector(
+              onTap: widget.searchTap,
+              child: ThemedIcon(context, FontAwesomeIcons.searchLocation, 35),
+            ),
+            trailing: GestureDetector(
+              onTap: widget.collapseTap,
+              child: ThemedIcon(
+                  context,
+                  !widget.isBSOpen
+                      ? FontAwesomeIcons.chevronCircleUp
+                      : FontAwesomeIcons.chevronCircleDown,
+                  35),
+            ),
+            title: TextFormField(
+              initialValue: widget.address,
+              style: TextStyle(
+                  fontFamily: 'bolt-semibold',
+                  fontWeight: FontWeight.bold,
+                  color: kDarkModeColor,
+                  fontSize: 20),
+              onFieldSubmitted: (value) => print(value),
+              onTap: widget.textFormTap,
+              autocorrect: false,
+              enableSuggestions: false,
+              keyboardType: TextInputType.text,
+              decoration: kInputDecoration.copyWith(hintText: 'Where to?'),
             ),
           ),
-          Container(
-            child: isBSOpen ? Expanded(child: TabButtons()) : Container(),
-          ),
-        ],
+        ),
       ),
     );
   }

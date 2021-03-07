@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:rider_app/constants.dart';
+
 import 'component_widgets.dart';
 
 class FloatingDrawerButton extends StatelessWidget {

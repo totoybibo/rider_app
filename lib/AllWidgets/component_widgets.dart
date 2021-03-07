@@ -41,8 +41,7 @@ class CMaterialButton extends StatelessWidget {
       constraints: BoxConstraints.tightFor(width: 50, height: 50),
       onPressed: onTap,
       shape: CircleBorder(),
-      fillColor: kDarkModeColor,
-      highlightColor: Colors.lightBlueAccent.shade200,
+      highlightColor: kDarkModeColor,
       child: ThemedIcon(context, icon, size),
     );
   }

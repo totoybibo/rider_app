@@ -34,8 +34,9 @@ const kInputDecoration = InputDecoration(
         color: Colors.green,
         fontSize: 20,
         fontWeight: FontWeight.bold));
-const kHollandVillage = CameraPosition(
-  target: LatLng(1.3091294601034407, 103.7944606046135),
+const kDefaultCameraPos = CameraPosition(
+  // target: LatLng(1.3091294601034407, 103.7944606046135),
+  target: LatLng(37.42796133580664, -122.085749655962),
   zoom: 14.4746,
 );
 //const kLatLng = LatLng(37.42796133580664, -122.085749655962); //Google Headquarters

@@ -3,6 +3,13 @@ import 'package:rider_app/constants.dart';
 import 'package:rider_app/AllWidgets/component_widgets.dart';
 
 class TabButtons extends StatefulWidget {
+  final Function addFavorites;
+  final Function addHome;
+  final Function addWork;
+  TabButtons(
+      {@required this.addFavorites,
+      @required this.addWork,
+      @required this.addHome});
   @override
   _TabButtonsState createState() => _TabButtonsState();
 }
@@ -77,8 +84,9 @@ class _TabButtonsState extends State<TabButtons>
           HDividerWidget(),
           Container(
             child: ListInputMenus(
-              addWork: () {},
-              addHome: () {},
+              addFavorites: widget.addFavorites,
+              addWork: widget.addWork,
+              addHome: widget.addHome,
             ),
           ),
         ],
@@ -88,13 +96,13 @@ class _TabButtonsState extends State<TabButtons>
 }
 
 class ListInputMenus extends StatelessWidget {
-  ListInputMenus({
-    @required this.addWork,
-    @required this.addHome,
-  });
-
-  final Function addWork;
+  final Function addFavorites;
   final Function addHome;
+  final Function addWork;
+  ListInputMenus(
+      {@required this.addFavorites,
+      @required this.addHome,
+      @required this.addWork});
 
   @override
   Widget build(BuildContext context) {
@@ -104,7 +112,7 @@ class ListInputMenus extends StatelessWidget {
           constraints: kBoxConstraints,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
           highlightColor: Colors.lightBlueAccent,
-          onPressed: addWork,
+          onPressed: addFavorites,
           child: kFavoriteListItem,
         ),
         HDividerWidget(),
