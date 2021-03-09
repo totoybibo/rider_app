@@ -217,7 +217,7 @@ class _MainScreenState extends State<MainScreen> {
                   textFormTap: () => setState(() => isBSOpen = true),
                   placesTap: (value) {
                     destinationPosition(context, value);
-                    setState(()=> isBSOpen=false);
+                    setState(() => isBSOpen = false);
                   },
                 ),
               ),
@@ -302,7 +302,7 @@ class _MainScreenState extends State<MainScreen> {
               title: destinationPosition.name, snippet: 'Destination Location'),
           position: destinationLatLng,
           markerId: MarkerId(destinationPosition.placeId));
-
+      markerSet.clear();
       setState(() {
         markerSet.add(pickupMarker);
         markerSet.add(destinationMarker);
@@ -323,7 +323,7 @@ class _MainScreenState extends State<MainScreen> {
           strokeWidth: 4,
           strokeColor: Colors.redAccent,
           circleId: CircleId(destinationPosition.placeId));
-
+      circleSet.clear();
       setState(() {
         circleSet.add(pickupCircle);
         circleSet.add(destinationCircle);

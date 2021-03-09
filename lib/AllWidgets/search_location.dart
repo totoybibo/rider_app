@@ -27,6 +27,7 @@ class SearchLocation extends StatefulWidget {
 
 class _SearchLocationState extends State<SearchLocation> {
   TextEditingController controller = TextEditingController();
+  TextEditingController pickupController = TextEditingController();
   List<PlacePredictions> list = [];
   void findPlace(String value) async {
     if (controller.text.length > 2) {
@@ -49,11 +50,11 @@ class _SearchLocationState extends State<SearchLocation> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    pickupController.text = widget.currentLocation;
   }
 
   @override
   Widget build(BuildContext context) {
-    print(widget.currentLocation);
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
@@ -79,6 +80,7 @@ class _SearchLocationState extends State<SearchLocation> {
                       size: 35, color: Colors.greenAccent),
                 ),
                 title: TextFormField(
+                  controller: pickupController,
                   initialValue: widget.currentLocation,
                   enabled: false,
                   maxLines: 1,
