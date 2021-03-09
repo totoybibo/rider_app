@@ -50,11 +50,11 @@ class _SearchLocationState extends State<SearchLocation> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    pickupController.text = widget.currentLocation;
   }
 
   @override
   Widget build(BuildContext context) {
+    print(widget.currentLocation);
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
@@ -79,23 +79,20 @@ class _SearchLocationState extends State<SearchLocation> {
                   child: Icon(Icons.location_pin,
                       size: 35, color: Colors.greenAccent),
                 ),
-                title: TextFormField(
-                  controller: pickupController,
-                  initialValue: widget.currentLocation,
-                  enabled: false,
-                  maxLines: 1,
-                  style: TextStyle(
-                      fontFamily: 'bolt-semibold',
-                      fontWeight: FontWeight.bold,
-                      color: kDarkModeColor,
-                      fontSize: 16),
-                  onChanged: (value) => findPlace(value),
-                  onTap: widget.textFormTap,
-                  autocorrect: false,
-                  enableSuggestions: false,
-                  keyboardType: TextInputType.text,
-                  decoration:
-                      kInputDecoration.copyWith(labelText: 'Current Location'),
+                title: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('Current Location',
+                        style: TextStyle(
+                            fontSize: 12,
+                            color: Colors.blueAccent,
+                            fontWeight: FontWeight.bold)),
+                    Text(
+                      widget.currentLocation,
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold, color: kDarkModeColor),
+                    ),
+                  ],
                 ),
               ),
             ),
@@ -107,6 +104,7 @@ class _SearchLocationState extends State<SearchLocation> {
                 horizontalTitleGap: 0,
                 minVerticalPadding: 0,
                 leading: GestureDetector(
+                  onDoubleTap: () => controller.clear(),
                   onTap: () => Fluttertoast.showToast(
                       msg: 'Your destination.',
                       backgroundColor: Colors.lightBlueAccent,
