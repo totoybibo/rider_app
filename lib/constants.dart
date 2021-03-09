@@ -27,13 +27,14 @@ const kFavoriteListItem = ListTile(
           color: Colors.blueAccent, fontSize: 20, fontWeight: FontWeight.bold)),
 );
 const kInputDecoration = InputDecoration(
-    border: InputBorder.none,
-    hintText: 'Where to?',
-    hintStyle: TextStyle(
-        fontFamily: 'bolt-semibold',
-        color: Colors.green,
-        fontSize: 20,
-        fontWeight: FontWeight.bold));
+  border: InputBorder.none,
+  labelStyle: TextStyle(color: Colors.blueAccent, fontSize: 18),
+  hintStyle: TextStyle(
+      fontFamily: 'bolt-semibold',
+      color: Colors.green,
+      fontSize: 20,
+      fontWeight: FontWeight.bold),
+);
 const kDefaultCameraPos = CameraPosition(
   // target: LatLng(1.3091294601034407, 103.7944606046135),
   target: LatLng(37.42796133580664, -122.085749655962),

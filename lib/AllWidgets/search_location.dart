@@ -40,6 +40,8 @@ class _SearchLocationState extends State<SearchLocation> {
             .toList();
         setState(() => list = placeList);
       }
+    } else {
+      setState(() => list = []);
     }
   }
 
@@ -73,15 +75,25 @@ class _SearchLocationState extends State<SearchLocation> {
                       msg: 'Pick up location',
                       backgroundColor: Colors.lightBlueAccent,
                       gravity: ToastGravity.TOP),
-                  child: ThemedIcon(context, Icons.location_pin, 35),
+                  child: Icon(Icons.location_pin,
+                      size: 35, color: Colors.greenAccent),
                 ),
-                title: Text(
-                  widget.currentLocation,
-                  maxLines: 3,
+                title: TextFormField(
+                  initialValue: widget.currentLocation,
+                  enabled: false,
+                  maxLines: 1,
                   style: TextStyle(
                       fontFamily: 'bolt-semibold',
-                      color: Colors.green.shade800,
+                      fontWeight: FontWeight.bold,
+                      color: kDarkModeColor,
                       fontSize: 16),
+                  onChanged: (value) => findPlace(value),
+                  onTap: widget.textFormTap,
+                  autocorrect: false,
+                  enableSuggestions: false,
+                  keyboardType: TextInputType.text,
+                  decoration:
+                      kInputDecoration.copyWith(labelText: 'Current Location'),
                 ),
               ),
             ),
@@ -97,10 +109,10 @@ class _SearchLocationState extends State<SearchLocation> {
                       msg: 'Your destination.',
                       backgroundColor: Colors.lightBlueAccent,
                       gravity: ToastGravity.TOP),
-                  child: ThemedIcon(context, Icons.add_location, 35),
+                  child: Icon(Icons.location_pin, size: 35, color: Colors.red),
                 ),
                 title: TextFormField(
-                  maxLines: 2,
+                  maxLines: 1,
                   controller: controller,
                   style: TextStyle(
                       fontFamily: 'bolt-semibold',
@@ -112,7 +124,8 @@ class _SearchLocationState extends State<SearchLocation> {
                   autocorrect: false,
                   enableSuggestions: false,
                   keyboardType: TextInputType.text,
-                  decoration: kInputDecoration.copyWith(hintText: 'Where to?'),
+                  decoration: kInputDecoration.copyWith(
+                      labelText: 'Destination Location'),
                 ),
               ),
             ),
@@ -121,7 +134,7 @@ class _SearchLocationState extends State<SearchLocation> {
                     height: 300,
                     child: ListView.separated(
                       itemCount: list.length,
-                      physics: ClampingScrollPhysics(),
+                      physics: BouncingScrollPhysics(),
                       separatorBuilder: (context, index) => HDividerWidget(),
                       itemBuilder: (context, index) {
                         PlacePredictions place = list[index];

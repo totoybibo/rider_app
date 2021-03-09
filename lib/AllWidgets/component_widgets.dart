@@ -6,6 +6,7 @@ class ThemedIcon extends StatelessWidget {
   final BuildContext xContext;
   final IconData icon;
   final double size;
+
   ThemedIcon(this.xContext, this.icon, [this.size = 30]);
   @override
   Widget build(BuildContext context) {

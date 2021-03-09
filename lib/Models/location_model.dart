@@ -1,7 +1,20 @@
 import 'dart:collection';
-
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+
+class DirectionDetails {
+  int distanceValue;
+  int durationValue;
+  String distanceText;
+  String durationText;
+  String encodedPoints;
+  DirectionDetails(
+      {this.distanceValue,
+      this.durationText,
+      this.distanceText,
+      this.durationValue,
+      this.encodedPoints});
+}
 
 class Address {
   final String placeId;
