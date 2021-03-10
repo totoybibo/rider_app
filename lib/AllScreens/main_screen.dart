@@ -211,7 +211,7 @@ class _MainScreenState extends State<MainScreen> {
                   color: kDarkModeColor,
                 ),
                 child: SearchLocation(
-                  username: userDisplayName,
+                  userId: user.uid,
                   isBSOpen: isBSOpen,
                   currentLocation: currentPickUpLocation,
                   textFormTap: () => setState(() => isBSOpen = true),

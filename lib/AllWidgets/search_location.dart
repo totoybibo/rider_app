@@ -6,15 +6,17 @@ import 'package:rider_app/AllWidgets/component_widgets.dart';
 import 'dart:core';
 import 'package:rider_app/Helpers/httprequest.dart';
 import 'package:rider_app/Models/place_predictions.dart';
+import 'package:rider_app/main.dart';
+import 'package:auto_size_text/auto_size_text.dart';
 
 class SearchLocation extends StatefulWidget {
-  final String username;
+  final String userId;
   final bool isBSOpen;
   final String currentLocation;
   final Function textFormTap;
   final Function placesTap;
   SearchLocation({
-    @required this.username,
+    @required this.userId,
     @required this.isBSOpen,
     @required this.currentLocation,
     @required this.textFormTap,
@@ -50,6 +52,10 @@ class _SearchLocationState extends State<SearchLocation> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    favRef.child(widget.userId).onChildAdded.forEach((element) {
+      String name = element.snapshot.value['name'];
+      String key = element.snapshot.key;
+    });
   }
 
   @override
@@ -138,9 +144,26 @@ class _SearchLocationState extends State<SearchLocation> {
                       separatorBuilder: (context, index) => HDividerWidget(),
                       itemBuilder: (context, index) {
                         PlacePredictions place = list[index];
+                        bool favorite = false;
                         return PredictionTile(
+                            onFavePressed:
+                                (PlacePredictions value, bool favorite) {
+                              if (!favorite == true) {
+                                Map faves = {'name': value.mainText};
+                                favRef
+                                    .child(widget.userId)
+                                    .child(value.placeId)
+                                    .set(faves);
+                              } else {
+                                favRef
+                                    .child(widget.userId)
+                                    .child(value.placeId)
+                                    .remove();
+                              }
+
+                              return !favorite;
+                            },
                             prediction: place,
-                            isFavorite: true,
                             onTap: (PlacePredictions value) {
                               controller.text = value.mainText;
                               widget.placesTap(value.placeId);
@@ -156,25 +179,50 @@ class _SearchLocationState extends State<SearchLocation> {
   }
 }
 
-class PredictionTile extends StatelessWidget {
+class PredictionTile extends StatefulWidget {
   final PlacePredictions prediction;
-  final bool isFavorite;
+
   final Function onTap;
-  PredictionTile({this.prediction, this.isFavorite, this.onTap});
+  final Function onFavePressed;
+  PredictionTile({this.prediction, this.onTap, this.onFavePressed});
+
+  @override
+  _PredictionTileState createState() => _PredictionTileState();
+}
+
+class _PredictionTileState extends State<PredictionTile> {
+  bool isFavorite = false;
   @override
   Widget build(BuildContext context) {
-    return RMaterialButton(
-      onTap: () => onTap(prediction),
-      child: ListTile(
-        horizontalTitleGap: 0,
-        minVerticalPadding: 0,
-        leading: ThemedIcon(context,
-            isFavorite ? Icons.favorite : Icons.favorite_outline_rounded),
-        title: Text(prediction.mainText,
-            maxLines: 2,
-            style: TextStyle(color: Colors.grey, fontSize: 14),
-            overflow: TextOverflow.ellipsis),
-      ),
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        RawMaterialButton(
+          constraints: BoxConstraints.tightFor(width: 50, height: 50),
+          onPressed: () {
+            bool value = widget.onFavePressed(widget.prediction, isFavorite);
+            setState(() => isFavorite = value);
+          },
+          shape: CircleBorder(),
+          child: ThemedIcon(
+              context,
+              isFavorite ?? false
+                  ? Icons.favorite
+                  : Icons.favorite_outline_rounded,
+              35),
+        ),
+        RawMaterialButton(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(5),
+          ),
+          onPressed: () => widget.onTap(widget.prediction),
+          child: Container(
+            width: MediaQuery.of(context).size.width - 80,
+            child: Text(widget.prediction.mainText,
+                style: TextStyle(color: Colors.white70)),
+          ),
+        )
+      ],
     );
   }
 }
