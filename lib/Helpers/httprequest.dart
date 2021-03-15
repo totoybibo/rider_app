@@ -5,7 +5,6 @@ class HTTPRequest {
   static Future<dynamic> getRequest(String url) async {
     dynamic data;
     try {
-      print(url);
       http.Response response = await http.get(Uri.parse(url));
       if (response.statusCode == 200) {
         String jsonData = response.body;

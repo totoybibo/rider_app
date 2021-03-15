@@ -7,7 +7,7 @@ import 'dart:core';
 import 'package:rider_app/Helpers/httprequest.dart';
 import 'package:rider_app/Models/place_predictions.dart';
 import 'package:rider_app/main.dart';
-import 'package:auto_size_text/auto_size_text.dart';
+import 'package:rider_app/AllWidgets/prediction_tile.dart';
 
 class SearchLocation extends StatefulWidget {
   final String userId;
@@ -175,54 +175,6 @@ class _SearchLocationState extends State<SearchLocation> {
           ],
         ),
       ),
-    );
-  }
-}
-
-class PredictionTile extends StatefulWidget {
-  final PlacePredictions prediction;
-
-  final Function onTap;
-  final Function onFavePressed;
-  PredictionTile({this.prediction, this.onTap, this.onFavePressed});
-
-  @override
-  _PredictionTileState createState() => _PredictionTileState();
-}
-
-class _PredictionTileState extends State<PredictionTile> {
-  bool isFavorite = false;
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        RawMaterialButton(
-          constraints: BoxConstraints.tightFor(width: 50, height: 50),
-          onPressed: () {
-            bool value = widget.onFavePressed(widget.prediction, isFavorite);
-            setState(() => isFavorite = value);
-          },
-          shape: CircleBorder(),
-          child: ThemedIcon(
-              context,
-              isFavorite ?? false
-                  ? Icons.favorite
-                  : Icons.favorite_outline_rounded,
-              35),
-        ),
-        RawMaterialButton(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(5),
-          ),
-          onPressed: () => widget.onTap(widget.prediction),
-          child: Container(
-            width: MediaQuery.of(context).size.width - 80,
-            child: Text(widget.prediction.mainText,
-                style: TextStyle(color: Colors.white70)),
-          ),
-        )
-      ],
     );
   }
 }

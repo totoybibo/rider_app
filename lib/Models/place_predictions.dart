@@ -5,7 +5,8 @@ import 'package:provider/provider.dart';
 class PlacePredictions {
   String mainText;
   String placeId;
-  PlacePredictions({this.mainText, this.placeId});
+  bool isFavorite = false;
+  PlacePredictions({this.mainText, this.placeId, this.isFavorite});
   PlacePredictions.fromJson(Map<String, dynamic> data) {
     mainText = data['description'];
     placeId = data['place_id'];

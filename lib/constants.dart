@@ -36,8 +36,8 @@ const kInputDecoration = InputDecoration(
       fontWeight: FontWeight.bold),
 );
 const kDefaultCameraPos = CameraPosition(
-  // target: LatLng(1.3091294601034407, 103.7944606046135),
-  target: LatLng(37.42796133580664, -122.085749655962),
+  target: LatLng(1.3091294601034407, 103.7944606046135),
+  //target: LatLng(37.42796133580664, -122.085749655962),
   zoom: 14.4746,
 );
 //const kLatLng = LatLng(37.42796133580664, -122.085749655962); //Google Headquarters
@@ -46,7 +46,7 @@ const String googleMapKey = 'AIzaSyA_35szt8lTca-sbzbp8wx9LTk72MU0S48';
 const kBorderRadius = BorderRadius.only(
     topLeft: Radius.circular(20), topRight: Radius.circular(20));
 const kBoxShadow = BoxShadow(
-    color: Colors.black,
+    color: kDarkModeColor,
     blurRadius: 16,
     spreadRadius: 0.5,
     offset: Offset(0.7, 0.7));
