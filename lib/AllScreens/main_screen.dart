@@ -141,9 +141,13 @@ class _MainScreenState extends State<MainScreen> {
                   boxShadow: [kBoxShadow],
                 ),
                 child: BottomScreen(
-                    userId: user.uid,
-                    onTap: (PlacePredictions value) =>
-                        destinationPosition(context, value.placeId)),
+                  userId: user.uid,
+                  onTap: (PlacePredictions value) {
+                    setState(() => showSpinner = true);
+                    destinationPosition(context, value.placeId);
+                    setState(() => showSpinner = false);
+                  },
+                ),
               ),
             )
           ],

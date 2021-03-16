@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:rider_app/AllWidgets/component_widgets.dart';
-import 'package:rider_app/AllWidgets/favorites_tab.dart';
+import 'package:rider_app/AllWidgets/placelist_tab.dart';
 import 'package:rider_app/Models/place_predictions.dart';
 import 'package:rider_app/main.dart';
 import 'package:rider_app/Helpers/httprequest.dart';
@@ -96,7 +96,7 @@ class _BottomScreenState extends State<BottomScreen> {
             ),
           ),
         ),
-        FavoritesTab(
+        PlaceListTab(
           userId: widget.userId,
           onTap: (PlacePredictions value) {
             controller.text = value.mainText;

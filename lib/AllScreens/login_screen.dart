@@ -36,14 +36,12 @@ class _LoginScreenState extends State<LoginScreen>
       User usr = (await _auth
               .signInWithEmailAndPassword(email: email, password: password)
               .catchError((e) {
-        Fluttertoast.showToast(msg: e.toString());
+        //Fluttertoast.showToast(msg: e.toString());
       }))
           .user;
 
       if (usr == null) {
-        Fluttertoast.showToast(
-            msg: 'unable to login for user $email',
-            backgroundColor: Colors.redAccent);
+        throw 'user email/password is invalid';
       } else {
         await userRef.child(usr.uid).once().then((snap) {
           if (snap != null) {
@@ -56,16 +54,14 @@ class _LoginScreenState extends State<LoginScreen>
             Navigator.pushNamedAndRemoveUntil(
                 context, MainScreen.id, (route) => false);
           } else {
-            Fluttertoast.showToast(
-                msg: 'No record found for ${usr.email}',
-                backgroundColor: Colors.lightBlueAccent);
+            throw 'user email/password is invalid';
             _auth.signOut();
           }
         });
       }
     } catch (e) {
       Fluttertoast.showToast(
-          msg: e.toString(), backgroundColor: Colors.redAccent);
+          msg: 'user email/password is invalid', backgroundColor: Colors.blue);
     } finally {
       setState(() => showSpinner = false);
     }

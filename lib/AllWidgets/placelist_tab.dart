@@ -4,18 +4,18 @@ import 'package:rider_app/AllWidgets/component_widgets.dart';
 import 'package:rider_app/AllWidgets/prediction_tile.dart';
 import 'package:rider_app/main.dart';
 
-class FavoritesTab extends StatefulWidget {
+class PlaceListTab extends StatefulWidget {
   final Function onTap;
   final List<PlacePredictions> list;
   final String userId;
-  FavoritesTab(
+  PlaceListTab(
       {@required this.onTap, @required this.list, @required this.userId});
 
   @override
-  _FavoritesTabState createState() => _FavoritesTabState();
+  _PlaceListTabState createState() => _PlaceListTabState();
 }
 
-class _FavoritesTabState extends State<FavoritesTab> {
+class _PlaceListTabState extends State<PlaceListTab> {
   @override
   Widget build(BuildContext context) {
     return Column(
