@@ -27,7 +27,7 @@ class HDividerWidget extends StatelessWidget {
 class VDividerWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Container(color: Colors.white, width: 1);
+    return Container(color: Colors.white, width: 1, height: 60);
   }
 }
 

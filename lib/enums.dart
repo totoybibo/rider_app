@@ -1,0 +1,1 @@
+enum ModeOfPayment { Cash, Card }

@@ -21,6 +21,7 @@ class _BottomScreenState extends State<BottomScreen> {
   TextEditingController controller = TextEditingController();
   bool showMaxline = false;
   bool isFavorites = true;
+  bool showBooking = false;
   @override
   void initState() {
     // TODO: implement initState
@@ -83,16 +84,7 @@ class _BottomScreenState extends State<BottomScreen> {
               enableSuggestions: false,
               controller: controller,
               maxLines: showMaxline ? 2 : 1,
-              decoration: InputDecoration(
-                enabledBorder: UnderlineInputBorder(
-                  borderSide: BorderSide(color: Colors.blueAccent),
-                ),
-                focusedBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: Colors.white)),
-                labelText: 'Where to?',
-                labelStyle:
-                    TextStyle(color: Colors.green, fontWeight: FontWeight.bold),
-              ),
+              decoration: kSearchInputDecoration,
             ),
           ),
         ),

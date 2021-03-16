@@ -41,13 +41,6 @@ class MainScreenDrawer extends StatelessWidget {
               RMaterialButton(
                 onTap: () {},
                 child: ListTile(
-                  leading: ThemedIcon(context, Icons.star),
-                  title: Text('Favorites', style: TextStyle(fontSize: 16)),
-                ),
-              ),
-              RMaterialButton(
-                onTap: () {},
-                child: ListTile(
                   leading: ThemedIcon(context, Icons.history),
                   title: Text('History', style: TextStyle(fontSize: 16)),
                 ),

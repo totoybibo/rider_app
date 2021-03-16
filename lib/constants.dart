@@ -58,3 +58,21 @@ const kLoginInputDecoration = InputDecoration(
     color: Colors.grey,
   ),
 );
+const kSearchInputDecoration = InputDecoration(
+  enabledBorder: UnderlineInputBorder(
+    borderSide: BorderSide(color: Colors.blueAccent),
+  ),
+  focusedBorder:
+      UnderlineInputBorder(borderSide: BorderSide(color: Colors.white)),
+  labelText: 'Where to?',
+  labelStyle: TextStyle(
+    color: Colors.green,
+    fontWeight: FontWeight.bold,
+  ),
+);
+const kBorderRadiusAll = BorderRadius.only(
+  topLeft: Radius.circular(16),
+  topRight: Radius.circular(16),
+  bottomRight: Radius.circular(16),
+  bottomLeft: Radius.circular(16),
+);

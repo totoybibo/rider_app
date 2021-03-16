@@ -19,6 +19,7 @@ import 'package:rider_app/PolylinePoints/flutter_polyline_points.dart';
 import 'package:rider_app/Helpers/helper_methods.dart';
 import 'package:rider_app/Helpers/httprequest.dart';
 import 'package:rider_app/main.dart';
+import 'package:rider_app/AllWidgets/book_car.dart';
 
 class MainScreen extends StatefulWidget {
   static const id = 'main';
@@ -45,6 +46,7 @@ class _MainScreenState extends State<MainScreen> {
   String currentPickUpLocation = '';
   Position currentPosition;
   String userDisplayName = '';
+  bool showBooking = false;
   void locationPosition(BuildContext context) async {
     Position position = await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.high);
@@ -107,7 +109,7 @@ class _MainScreenState extends State<MainScreen> {
             Positioned(
               left: MediaQuery.of(context).viewInsets.left,
               right: MediaQuery.of(context).viewInsets.right,
-              height: MediaQuery.of(context).size.height / 2 + 100,
+              height: MediaQuery.of(context).size.height / 2 + 80,
               child: GoogleMap(
                 zoomControlsEnabled: true,
                 markers: markerSet,
@@ -127,15 +129,15 @@ class _MainScreenState extends State<MainScreen> {
               onTap: () => scaffoldKey.currentState.openDrawer(),
             ),
             Positioned(
-              bottom: 0,
-              height: MediaQuery.of(context).size.height / 2 - 100,
+              bottom: MediaQuery.of(context).viewInsets.bottom,
+              height: MediaQuery.of(context).size.height / 2 - 70,
               left: MediaQuery.of(context).viewInsets.left,
               right: MediaQuery.of(context).viewInsets.right,
               child: Container(
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.only(
-                    topRight: Radius.circular(8),
-                    topLeft: Radius.circular(8),
+                    topRight: Radius.circular(16),
+                    topLeft: Radius.circular(16),
                   ),
                   color: kDarkModeColor,
                   boxShadow: [kBoxShadow],
@@ -145,11 +147,27 @@ class _MainScreenState extends State<MainScreen> {
                   onTap: (PlacePredictions value) {
                     setState(() => showSpinner = true);
                     destinationPosition(context, value.placeId);
-                    setState(() => showSpinner = false);
+                    setState(() {
+                      showSpinner = false;
+                      showBooking = true;
+                    });
                   },
                 ),
               ),
-            )
+            ),
+            Positioned(
+              bottom: MediaQuery.of(context).viewInsets.bottom,
+              height: MediaQuery.of(context).size.height / 2 - 70,
+              left: MediaQuery.of(context).viewInsets.left,
+              right: MediaQuery.of(context).viewInsets.right,
+              child: showBooking
+                  ? BookCar(
+                      origin: currentLocation,
+                      destination: destinationLocation,
+                      onTap: () => setState(() => showBooking = false),
+                    )
+                  : Container(),
+            ),
           ],
         ),
       ),
