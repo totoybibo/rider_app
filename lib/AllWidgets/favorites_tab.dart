@@ -42,6 +42,7 @@ class _FavoritesTabState extends State<FavoritesTab> {
                           .set(data);
                     } else {
                       favRef.child(widget.userId).child(value.placeId).remove();
+                      widget.list.removeAt(index);
                     }
                   },
                   prediction: place,
