@@ -159,7 +159,6 @@ class _LoginScreenState extends State<LoginScreen>
                 ),
                 SizedBox(height: 10),
                 Container(
-                  padding: EdgeInsets.all(2),
                   width: double.infinity,
                   height: 40,
                   child: OutlinedButton(
@@ -167,7 +166,7 @@ class _LoginScreenState extends State<LoginScreen>
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(20)),
                       side: BorderSide(
-                        color: animation.value,
+                        color: kPrimaryColor,
                         width: 3,
                       ),
                     ),
@@ -177,7 +176,7 @@ class _LoginScreenState extends State<LoginScreen>
                       style: TextStyle(
                         fontFamily: 'bolt-semibold',
                         fontSize: 18,
-                        color: animation.value,
+                        color: kPrimaryColor,
                       ),
                     ),
                   ),

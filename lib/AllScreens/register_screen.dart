@@ -164,14 +164,14 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                     style: TextStyle(
                         fontFamily: 'bolt-semibold',
                         fontSize: 18,
-                        color: Colors.yellow.shade500),
+                        color: kPrimaryColor),
                   ),
                   style: OutlinedButton.styleFrom(
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(20),
                     ),
                     side: BorderSide(
-                      color: Colors.yellow,
+                      color: kPrimaryColor,
                       width: 3,
                     ),
                   ),
