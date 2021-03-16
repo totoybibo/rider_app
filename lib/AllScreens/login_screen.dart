@@ -117,6 +117,11 @@ class _LoginScreenState extends State<LoginScreen>
                   style: TextStyle(fontSize: 14),
                   keyboardType: TextInputType.emailAddress,
                   decoration: kLoginInputDecoration.copyWith(
+                    focusedBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(
+                        color: Colors.yellow,
+                      ),
+                    ),
                     prefixIcon: ThemedIcon(context, Icons.email),
                     suffixIcon: GestureDetector(
                       child: kInfoIcon,
@@ -135,6 +140,11 @@ class _LoginScreenState extends State<LoginScreen>
                   style: TextStyle(fontSize: 14),
                   obscureText: true,
                   decoration: kLoginInputDecoration.copyWith(
+                    focusedBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(
+                        color: Colors.yellow,
+                      ),
+                    ),
                     prefixIcon: ThemedIcon(context, FontAwesomeIcons.userLock),
                     suffixIcon: GestureDetector(
                       child: kInfoIcon,
@@ -148,29 +158,31 @@ class _LoginScreenState extends State<LoginScreen>
                   ),
                 ),
                 SizedBox(height: 10),
-                RaisedButton(
-                  highlightColor: Colors.yellowAccent,
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20)),
-                  color: animation.value,
-                  textColor: Colors.black,
-                  child: Container(
-                    height: 50,
-                    child: Center(
-                      child: Text(
-                        'Login',
-                        style: TextStyle(
-                            fontFamily: 'bolt-semibold',
-                            fontSize: 18,
-                            color: Colors.black),
+                Container(
+                  padding: EdgeInsets.all(2),
+                  width: double.infinity,
+                  height: 40,
+                  child: OutlinedButton(
+                    style: OutlinedButton.styleFrom(
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20)),
+                      side: BorderSide(
+                        color: animation.value,
+                        width: 3,
+                      ),
+                    ),
+                    onPressed: () => loginUser(context),
+                    child: Text(
+                      'Login',
+                      style: TextStyle(
+                        fontFamily: 'bolt-semibold',
+                        fontSize: 18,
+                        color: animation.value,
                       ),
                     ),
                   ),
-                  onPressed: () {
-                    loginUser(context);
-                  },
                 ),
-                FlatButton(
+                TextButton(
                   onPressed: () {
                     Navigator.pushNamedAndRemoveUntil(
                         context, RegistrationScreen.id, (route) => false);

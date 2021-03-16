@@ -90,8 +90,14 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                 style: TextStyle(fontSize: 14),
                 keyboardType: TextInputType.name,
                 decoration: kLoginInputDecoration.copyWith(
-                    labelText: 'Name',
-                    prefixIcon: ThemedIcon(context, FontAwesomeIcons.user)),
+                  labelText: 'Name',
+                  prefixIcon: ThemedIcon(context, FontAwesomeIcons.user),
+                  focusedBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(
+                      color: Colors.yellow,
+                    ),
+                  ),
+                ),
               ),
               TextFormField(
                 autocorrect: false,
@@ -102,6 +108,11 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                 decoration: kLoginInputDecoration.copyWith(
                   labelText: 'Email',
                   prefixIcon: ThemedIcon(context, FontAwesomeIcons.envelope),
+                  focusedBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(
+                      color: Colors.yellow,
+                    ),
+                  ),
                 ),
                 autovalidateMode: AutovalidateMode.onUserInteraction,
                 validator: (text) {
@@ -116,6 +127,11 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                 decoration: kLoginInputDecoration.copyWith(
                   labelText: 'Phone',
                   prefixIcon: ThemedIcon(context, FontAwesomeIcons.phone),
+                  focusedBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(
+                      color: Colors.yellow,
+                    ),
+                  ),
                 ),
               ),
               TextFormField(
@@ -123,8 +139,14 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                 style: TextStyle(fontSize: 14),
                 obscureText: true,
                 decoration: kLoginInputDecoration.copyWith(
-                    labelText: 'Password',
-                    prefixIcon: ThemedIcon(context, FontAwesomeIcons.userLock)),
+                  labelText: 'Password',
+                  prefixIcon: ThemedIcon(context, FontAwesomeIcons.userLock),
+                  focusedBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(
+                      color: Colors.yellow,
+                    ),
+                  ),
+                ),
                 autovalidateMode: AutovalidateMode.onUserInteraction,
                 validator: (text) {
                   if (text.isEmpty) return '';
@@ -132,29 +154,30 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                 },
               ),
               SizedBox(height: 10),
-              RaisedButton(
-                highlightColor: Colors.yellowAccent,
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20)),
-                color: Colors.yellow,
-                textColor: Colors.black,
-                child: Container(
-                  height: 40,
-                  child: Center(
-                    child: Text(
-                      'Register',
-                      style: TextStyle(
-                          fontFamily: 'bolt-semibold',
-                          fontSize: 18,
-                          color: Colors.black),
+              Container(
+                width: double.infinity,
+                height: 40,
+                child: OutlinedButton(
+                  onPressed: () => registerUser(context),
+                  child: Text(
+                    'Register',
+                    style: TextStyle(
+                        fontFamily: 'bolt-semibold',
+                        fontSize: 18,
+                        color: Colors.yellow.shade500),
+                  ),
+                  style: OutlinedButton.styleFrom(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    side: BorderSide(
+                      color: Colors.yellow,
+                      width: 3,
                     ),
                   ),
                 ),
-                onPressed: () {
-                  registerUser(context);
-                },
               ),
-              FlatButton(
+              TextButton(
                 onPressed: () {
                   Navigator.pushNamedAndRemoveUntil(
                       context, LoginScreen.id, (route) => false);
