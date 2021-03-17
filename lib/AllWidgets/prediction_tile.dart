@@ -31,7 +31,7 @@ class PredictionTile extends StatelessWidget {
           child: Container(
             width: MediaQuery.of(context).size.width - 80,
             child: Text(prediction.mainText,
-                style: TextStyle(color: Colors.white70)),
+                style: TextStyle(color: Colors.blueAccent)),
           ),
         )
       ],

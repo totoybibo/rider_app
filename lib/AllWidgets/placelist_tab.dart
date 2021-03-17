@@ -18,39 +18,27 @@ class PlaceListTab extends StatefulWidget {
 class _PlaceListTabState extends State<PlaceListTab> {
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Container(
-          padding: EdgeInsets.only(left: 10, right: 10),
-          height: 220,
-          child: ListView.separated(
-            itemCount: widget.list.length,
-            physics: BouncingScrollPhysics(),
-            separatorBuilder: (context, index) => HDividerWidget(),
-            itemBuilder: (context, index) {
-              PlacePredictions place = widget.list[index];
-              return PredictionTile(
-                  isFavorite: place.isFavorite,
-                  onFavePressed: (PlacePredictions value, bool favorite) {
-                    setState(() => place.isFavorite = !favorite);
-                    if (place.isFavorite) {
-                      Map data = {'name': value.mainText};
-                      favRef
-                          .child(widget.userId)
-                          .child(value.placeId)
-                          .set(data);
-                    } else {
-                      favRef.child(widget.userId).child(value.placeId).remove();
-                      widget.list.removeAt(index);
-                    }
-                  },
-                  prediction: place,
-                  onTap: widget.onTap);
+    return ListView.separated(
+      itemCount: widget.list.length,
+      physics: BouncingScrollPhysics(),
+      separatorBuilder: (context, index) => HDividerWidget(),
+      itemBuilder: (context, index) {
+        PlacePredictions place = widget.list[index];
+        return PredictionTile(
+            isFavorite: place.isFavorite,
+            onFavePressed: (PlacePredictions value, bool favorite) {
+              setState(() => place.isFavorite = !favorite);
+              if (place.isFavorite) {
+                Map data = {'name': value.mainText};
+                favRef.child(widget.userId).child(value.placeId).set(data);
+              } else {
+                favRef.child(widget.userId).child(value.placeId).remove();
+                widget.list.removeAt(index);
+              }
             },
-          ),
-        ),
-      ],
+            prediction: place,
+            onTap: widget.onTap);
+      },
     );
   }
 }

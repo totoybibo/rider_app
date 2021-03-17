@@ -7,6 +7,7 @@ import 'package:rider_app/AllScreens/register_screen.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:rider_app/DataHandler/app_data.dart';
 import 'package:rider_app/constants.dart';
+import 'package:rider_app/AllScreens/destination_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -48,7 +49,8 @@ class Main extends StatelessWidget {
         routes: {
           MainScreen.id: (context) => MainScreen(),
           LoginScreen.id: (context) => LoginScreen(),
-          RegistrationScreen.id: (context) => RegistrationScreen()
+          RegistrationScreen.id: (context) => RegistrationScreen(),
+          DestinationScreen.id: (context) => DestinationScreen()
         },
       ),
     );
