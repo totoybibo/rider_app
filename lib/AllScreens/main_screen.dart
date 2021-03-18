@@ -18,6 +18,7 @@ import 'package:rider_app/PolylinePoints/flutter_polyline_points.dart';
 import 'package:rider_app/Helpers/helper_methods.dart';
 import 'package:rider_app/Helpers/httprequest.dart';
 import 'package:rider_app/main.dart';
+import 'confirm_screen.dart';
 
 class MainScreen extends StatefulWidget {
   static const id = 'main';
@@ -29,7 +30,7 @@ class MainScreen extends StatefulWidget {
 class _MainScreenState extends State<MainScreen> {
   Completer<GoogleMapController> gMapController = Completer();
   GoogleMapController newGoogleMapController;
-  bool showSpinner = false;
+  bool showSpinner = true;
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final User user = FirebaseAuth.instance.currentUser;
   GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
@@ -57,9 +58,12 @@ class _MainScreenState extends State<MainScreen> {
         .animateCamera(CameraUpdate.newCameraPosition(cameraPosition));
 
     Address location = await HelperMethods.searchCoordinates(position, 'home');
-    Provider.of<AppData>(context, listen: false).pickUpLocation = location;
+    Provider.of<AppData>(context, listen: false).setOrigin = location;
     currentLocation = location;
-    setState(() => currentPickUpLocation = currentLocation.address);
+    setState(() {
+      currentPickUpLocation = currentLocation.address;
+      showSpinner = false;
+    });
   }
 
   void getUser() async {
@@ -177,12 +181,16 @@ class _MainScreenState extends State<MainScreen> {
                       child: RawMaterialButton(
                         highlightColor: Colors.blueAccent,
                         onPressed: () async {
+                          setState(() => showSpinner = true);
                           dynamic dest = await Navigator.pushNamed<dynamic>(
                               context, DestinationScreen.id);
                           if (dest == null) return;
                           PlacePredictions place = dest;
-                          destinationPosition(context, place.placeId);
-                          setState(() => destination = place.mainText);
+                          destinationPosition(context, place);
+                          setState(() {
+                            destination = place.mainText;
+                            showSpinner = false;
+                          });
                         },
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.only(
@@ -244,7 +252,16 @@ class _MainScreenState extends State<MainScreen> {
                   child: RawMaterialButton(
                     highlightColor: Colors.lightBlueAccent,
                     fillColor: Colors.blueGrey,
-                    onPressed: () => print('Booked!'),
+                    onPressed: () {
+                      if (destination.isEmpty) {
+                        Fluttertoast.showToast(
+                            msg: 'Please select destination',
+                            backgroundColor: Colors.blueAccent,
+                            gravity: ToastGravity.CENTER);
+                      } else {
+                        Navigator.pushNamed(context, ConfirmScreen.id);
+                      }
+                    },
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
                     ),
@@ -276,10 +293,11 @@ class _MainScreenState extends State<MainScreen> {
     newGoogleMapController.dispose();
   }
 
-  void destinationPosition(BuildContext context, String placeId) async {
+  void destinationPosition(BuildContext context, PlacePredictions place) async {
     String url =
-        'https://maps.googleapis.com/maps/api/place/details/json?place_id=$placeId&fields=geometry&key=$googleMapKey';
+        'https://maps.googleapis.com/maps/api/place/details/json?place_id=${place.placeId}&fields=geometry&key=$googleMapKey';
     dynamic resp = await HTTPRequest.getRequest(url);
+    print(resp['result']);
     if (resp['status'] == 'OK') {
       double lat = resp['result']['geometry']['location']['lat'];
       double lng = resp['result']['geometry']['location']['lng'];
@@ -289,9 +307,14 @@ class _MainScreenState extends State<MainScreen> {
           longitude: latLngPosition.longitude);
 
       Address destination =
-          Address(placeId: placeId, name: 'destination', position: position);
-      Provider.of<AppData>(context, listen: false).destinationLocation =
-          destination;
+          await HelperMethods.searchCoordinates(position, 'destination');
+
+      // Address destination = Address(
+      //     placeId: place.placeId,
+      //     name: 'destination',
+      //     address: place.mainText,
+      //     position: position);
+      Provider.of<AppData>(context, listen: false).setDestination = destination;
 
       CameraPosition cameraPosition =
           CameraPosition(target: latLngPosition, zoom: 14.4746);
@@ -305,9 +328,9 @@ class _MainScreenState extends State<MainScreen> {
     setState(() => showSpinner = true);
     try {
       Address initialPosition =
-          Provider.of<AppData>(context, listen: false).pickUpPosition;
+          Provider.of<AppData>(context, listen: false).origin;
       Address destinationPosition =
-          Provider.of<AppData>(context, listen: false).destinationPosition;
+          Provider.of<AppData>(context, listen: false).destination;
       LatLng pickUpLatLng =
           LatLng(initialPosition.latitude, initialPosition.longitude);
       LatLng destinationLatLng =
@@ -409,93 +432,3 @@ class _MainScreenState extends State<MainScreen> {
     }
   }
 }
-/*
-  @override
-  Widget build(BuildContext context) {
-    return ModalProgressHUD(
-      inAsyncCall: showSpinner,
-      child: Scaffold(
-        key: scaffoldKey,
-        drawer: MainScreenDrawer(
-          username: userDisplayName,
-          user: user,
-          signOut: () {
-            Fluttertoast.showToast(
-                msg: 'Goodbye $userDisplayName',
-                backgroundColor: Colors.lightBlueAccent,
-                gravity: ToastGravity.TOP);
-            _auth.signOut();
-            Navigator.pushNamedAndRemoveUntil(
-                context, LoginScreen.id, (route) => false);
-          },
-        ),
-        body: Stack(
-          children: [
-            Positioned(
-              left: MediaQuery.of(context).viewInsets.left,
-              right: MediaQuery.of(context).viewInsets.right,
-              height: MediaQuery.of(context).size.height / 2 + 80,
-              child: GoogleMap(
-                zoomControlsEnabled: true,
-                markers: markerSet,
-                circles: circleSet,
-                polylines: polyLineSet,
-                myLocationEnabled: true,
-                initialCameraPosition: MainScreen._kLocationPosition,
-                myLocationButtonEnabled: false,
-                onMapCreated: (GoogleMapController controller) {
-                  gMapController.complete(controller);
-                  newGoogleMapController = controller;
-                  locationPosition(context);
-                },
-              ),
-            ),
-            DrawerButton(
-              onTap: () => scaffoldKey.currentState.openDrawer(),
-            ),
-            Positioned(
-              bottom: MediaQuery.of(context).viewInsets.bottom,
-              height: MediaQuery.of(context).size.height / 2 - 70,
-              left: MediaQuery.of(context).viewInsets.left,
-              right: MediaQuery.of(context).viewInsets.right,
-              child: Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.only(
-                    topRight: Radius.circular(16),
-                    topLeft: Radius.circular(16),
-                  ),
-                  color: kDarkModeColor,
-                  boxShadow: [kBoxShadow],
-                ),
-                child: BottomScreen(
-                  userId: user.uid,
-                  onTap: (PlacePredictions value) {
-                    setState(() => showSpinner = true);
-                    destinationPosition(context, value.placeId);
-                    setState(() {
-                      showSpinner = false;
-                      showBooking = true;
-                    });
-                  },
-                ),
-              ),
-            ),
-            Positioned(
-              bottom: MediaQuery.of(context).viewInsets.bottom,
-              height: MediaQuery.of(context).size.height / 2 - 70,
-              left: MediaQuery.of(context).viewInsets.left,
-              right: MediaQuery.of(context).viewInsets.right,
-              child: showBooking
-                  ? BookCar(
-                      origin: currentLocation,
-                      destination: destinationLocation,
-                      onTap: () => setState(() => showBooking = false),
-                    )
-                  : Container(),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-*/
