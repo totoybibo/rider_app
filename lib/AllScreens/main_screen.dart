@@ -182,15 +182,17 @@ class _MainScreenState extends State<MainScreen> {
                         highlightColor: Colors.blueAccent,
                         onPressed: () async {
                           setState(() => showSpinner = true);
-                          dynamic dest = await Navigator.pushNamed<dynamic>(
-                              context, DestinationScreen.id);
-                          if (dest == null) return;
-                          PlacePredictions place = dest;
-                          destinationPosition(context, place);
-                          setState(() {
-                            destination = place.mainText;
-                            showSpinner = false;
-                          });
+                          try {
+                            dynamic dest = await Navigator.pushNamed<dynamic>(
+                                context, DestinationScreen.id);
+                            if (dest == null) return;
+                            PlacePredictions place = dest;
+                            await destinationPosition(context, place);
+                          } catch (e) {
+                            print(e);
+                          } finally {
+                            setState(() => showSpinner = false);
+                          }
                         },
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.only(
@@ -293,7 +295,8 @@ class _MainScreenState extends State<MainScreen> {
     newGoogleMapController.dispose();
   }
 
-  void destinationPosition(BuildContext context, PlacePredictions place) async {
+  Future<void> destinationPosition(
+      BuildContext context, PlacePredictions place) async {
     String url =
         'https://maps.googleapis.com/maps/api/place/details/json?place_id=${place.placeId}&fields=geometry&key=$googleMapKey';
     dynamic resp = await HTTPRequest.getRequest(url);
@@ -306,15 +309,10 @@ class _MainScreenState extends State<MainScreen> {
           latitude: latLngPosition.latitude,
           longitude: latLngPosition.longitude);
 
-      Address destination =
+      Address address =
           await HelperMethods.searchCoordinates(position, 'destination');
-
-      // Address destination = Address(
-      //     placeId: place.placeId,
-      //     name: 'destination',
-      //     address: place.mainText,
-      //     position: position);
-      Provider.of<AppData>(context, listen: false).setDestination = destination;
+      setState(() => destination = place.mainText);
+      Provider.of<AppData>(context, listen: false).setDestination = address;
 
       CameraPosition cameraPosition =
           CameraPosition(target: latLngPosition, zoom: 14.4746);
