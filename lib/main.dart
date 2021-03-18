@@ -19,8 +19,7 @@ void main() async {
 DatabaseReference dbRef = FirebaseDatabase.instance.reference();
 DatabaseReference userRef = dbRef.child('users');
 DatabaseReference favRef = dbRef.child('favorites');
-DatabaseReference homeRef = dbRef.child('homes');
-DatabaseReference workRef = dbRef.child('works');
+DatabaseReference bookingRef = dbRef.child('bookings');
 
 class Main extends StatelessWidget {
   @override

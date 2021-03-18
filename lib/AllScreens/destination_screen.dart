@@ -102,7 +102,7 @@ class _DestinationScreenState extends State<DestinationScreen> {
         title: Container(
           child: ListTile(
             title: Text(
-              'Where to, ${userDisplayName ?? ''}?',
+              'Search Destination',
               style: TextStyle(
                   color: Colors.blueAccent,
                   fontSize: 20,

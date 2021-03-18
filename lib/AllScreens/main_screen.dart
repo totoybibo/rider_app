@@ -32,7 +32,7 @@ class _MainScreenState extends State<MainScreen> {
   GoogleMapController newGoogleMapController;
   bool showSpinner = true;
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  final User user = FirebaseAuth.instance.currentUser;
+  //final User user = FirebaseAuth.instance.currentUser;
   GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
   List<LatLng> pLineCoordinates = [];
   Set<Polyline> polyLineSet = {};
@@ -45,7 +45,7 @@ class _MainScreenState extends State<MainScreen> {
   String currentPickUpLocation = '';
   String destination = '';
   Position currentPosition;
-  String userDisplayName = '';
+
   bool showBooking = false;
   void locationPosition(BuildContext context) async {
     Position position = await Geolocator.getCurrentPosition(
@@ -66,30 +66,11 @@ class _MainScreenState extends State<MainScreen> {
     });
   }
 
-  void getUser() async {
-    if (user != null) {
-      await userRef.child(user.uid).once().then((snap) {
-        if (snap != null) {
-          setState(() => userDisplayName = snap.value['name']);
-        } else {
-          Fluttertoast.showToast(
-              msg: 'No record found for ${user.email}',
-              backgroundColor: Colors.lightBlueAccent);
-          _auth.signOut();
-        }
-      });
-    }
-  }
-
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    getUser();
-  }
-
   @override
   Widget build(BuildContext context) {
+    User usr = Provider.of<AppData>(context, listen: false).user;
+    String userName = Provider.of<AppData>(context, listen: false).userName;
+
     return Scaffold(
       appBar: AppBar(
         toolbarHeight: 75,
@@ -106,7 +87,7 @@ class _MainScreenState extends State<MainScreen> {
         title: Container(
           child: ListTile(
             title: Text(
-              'Hello $userDisplayName!',
+              '$userName!',
               style: TextStyle(
                   color: Colors.blueAccent,
                   fontSize: 25,
@@ -270,7 +251,8 @@ class _MainScreenState extends State<MainScreen> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
-                        Text('Book this Ride',
+                        Icon(FontAwesomeIcons.check, color: Colors.white),
+                        Text('Confirm',
                             style: TextStyle(
                                 fontSize: 20,
                                 color: Colors.white,
@@ -335,6 +317,9 @@ class _MainScreenState extends State<MainScreen> {
           LatLng(destinationPosition.latitude, destinationPosition.longitude);
       DirectionDetails details = await HelperMethods.getDirectionDetails(
           pickUpLatLng, destinationLatLng);
+
+      Provider.of<AppData>(context, listen: false).setDirectionDetails =
+          details;
 
       PolylinePoints polylinePoints = PolylinePoints();
       List<PointLatLng> decodedPolylinePointsResult =

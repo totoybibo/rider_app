@@ -10,6 +10,8 @@ import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'dart:ui';
 import 'package:rider_app/AllWidgets/component_widgets.dart';
+import 'package:provider/provider.dart';
+import 'package:rider_app/DataHandler/app_data.dart';
 
 class LoginScreen extends StatefulWidget {
   static const id = 'login';
@@ -46,6 +48,8 @@ class _LoginScreenState extends State<LoginScreen>
         await userRef.child(usr.uid).once().then((snap) {
           if (snap != null) {
             String name = snap.value['name'];
+            Provider.of<AppData>(context, listen: false).setUser = usr;
+            Provider.of<AppData>(context, listen: false).userName = name;
             Fluttertoast.showToast(
                 msg: 'Welcome $name',
                 backgroundColor: Colors.lightBlueAccent,
