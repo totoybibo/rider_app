@@ -24,7 +24,7 @@ class _ConfirmScreenState extends State<ConfirmScreen> {
   TextEditingController controller = TextEditingController();
   @override
   Widget build(BuildContext context) {
-    AppData data = Provider.of<AppData>(context);
+    AppData data = Provider.of<AppData>(context, listen: false);
     Address origin = data.origin;
     Address destination = data.destination;
     String fare = data.calculateFare;
@@ -32,7 +32,7 @@ class _ConfirmScreenState extends State<ConfirmScreen> {
     String userId = data.userId;
     return Scaffold(
       appBar: AppBar(
-        toolbarHeight: 75,
+        toolbarHeight: 50,
         backgroundColor: kDarkModeColor,
         leading: RawMaterialButton(
           onPressed: () => Navigator.pop(context),
@@ -62,152 +62,149 @@ class _ConfirmScreenState extends State<ConfirmScreen> {
       ),
       body: ModalProgressHUD(
         inAsyncCall: showSpinner,
-        child: Container(
+        child: Positioned(
+          top: MediaQuery.of(context).viewInsets.top,
+          left: 0,
+          right: 0,
           child: Container(
             decoration: BoxDecoration(
               color: kDarkModeColor,
               borderRadius: kBorderRadiusAll,
             ),
-            child: Padding(
-              padding: const EdgeInsets.only(left: 10, right: 10, top: 10),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      SizedBox(width: 10),
-                      Image.asset('images/taxi.png', width: 80, height: 80),
-                      SizedBox(width: 10),
-                      Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'Car',
-                              style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 20,
-                                  color: Colors.white70),
-                            ),
-                            Text(distance, style: TextStyle(fontSize: 16)),
-                          ]),
-                      SizedBox(width: 20),
-                      VDividerWidget(),
-                      SizedBox(width: 20),
-                      Column(
+            padding: const EdgeInsets.only(left: 10, right: 10),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    SizedBox(width: 10),
+                    Image.asset('images/taxi.png', width: 80, height: 80),
+                    SizedBox(width: 10),
+                    Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text('Amount',
-                              style: TextStyle(color: Colors.white70)),
-                          Text(fare,
-                              style: TextStyle(
-                                  fontSize: 35,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.green)),
-                        ],
-                      )
-                    ],
-                  ),
-                  HDividerWidget(),
-                  SizedBox(height: 5),
-                  Column(
-                    children: [
-                      Container(
-                        width: double.infinity,
-                        child: CupertinoSlidingSegmentedControl(
-                          thumbColor: Colors.blue,
-                          children: {
-                            ModeOfPayment.Cash: Text(
-                              'Cash',
-                              style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.white),
-                            ),
-                            ModeOfPayment.Card: Text(
-                              'Card',
-                              style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.white),
-                            )
-                          },
-                          groupValue: payment,
-                          onValueChanged: (value) =>
-                              setState(() => payment = value),
-                        ),
-                      ),
-                      payment == ModeOfPayment.Card
-                          ? TextField(
-                              controller: controller,
-                              autofocus: true,
-                              keyboardType: TextInputType.number,
-                              enableSuggestions: false,
-                              autocorrect: false,
-                              decoration: InputDecoration(
-                                  labelText: 'Card Number',
-                                  border: UnderlineInputBorder(
-                                      borderSide: BorderSide.none)),
-                            )
-                          : Container(),
-                    ],
-                  ),
-                  SizedBox(height: 5),
-                  HDividerWidget(),
-                  Container(
-                    height: 70,
-                    width: MediaQuery.of(context).size.width,
-                    child: ListTile(
-                      title:
-                          Text('origin', style: TextStyle(color: Colors.green)),
-                      subtitle: Text(
-                        origin.address,
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
-                            fontSize: 16,
-                            color: Colors.white70,
-                            fontWeight: FontWeight.bold),
+                          Text(
+                            'Car',
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 20,
+                                color: Colors.white70),
+                          ),
+                          Text(distance, style: TextStyle(fontSize: 16)),
+                        ]),
+                    SizedBox(width: 20),
+                    VDividerWidget(),
+                    SizedBox(width: 20),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text('Amount', style: TextStyle(color: Colors.white70)),
+                        Text(fare,
+                            style: TextStyle(
+                                fontSize: 35,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.green)),
+                      ],
+                    )
+                  ],
+                ),
+                HDividerWidget(),
+                SizedBox(height: 5),
+                Column(
+                  children: [
+                    Container(
+                      width: double.infinity,
+                      child: CupertinoSlidingSegmentedControl(
+                        thumbColor: Colors.blue,
+                        children: {
+                          ModeOfPayment.Cash: Text(
+                            'Cash',
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white),
+                          ),
+                          ModeOfPayment.Card: Text(
+                            'Card',
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white),
+                          )
+                        },
+                        groupValue: payment,
+                        onValueChanged: (value) =>
+                            setState(() => payment = value),
                       ),
                     ),
-                  ),
-                  HDividerWidget(),
-                  RawMaterialButton(
-                    highlightColor: Colors.blue,
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(5)),
-                    onPressed: () {},
-                    child: Container(
-                      height: 70,
-                      width: MediaQuery.of(context).size.width,
-                      child: ListTile(
-                        title: Text('destination',
-                            style: TextStyle(color: Colors.red)),
-                        subtitle: Text(
-                          destination.address,
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
-                          style: TextStyle(
-                              fontSize: 16,
-                              color: Colors.white70,
-                              fontWeight: FontWeight.bold),
-                        ),
-                      ),
+                    payment == ModeOfPayment.Card
+                        ? TextField(
+                            controller: controller,
+                            autofocus: true,
+                            keyboardType: TextInputType.text,
+                            enableSuggestions: false,
+                            autocorrect: false,
+                            decoration: InputDecoration(
+                                labelText: 'Card Number',
+                                border: UnderlineInputBorder(
+                                    borderSide: BorderSide.none)),
+                          )
+                        : Container(),
+                  ],
+                ),
+                SizedBox(height: 5),
+                HDividerWidget(),
+                Container(
+                  height: 70,
+                  width: MediaQuery.of(context).size.width,
+                  child: ListTile(
+                    title:
+                        Text('origin', style: TextStyle(color: Colors.green)),
+                    subtitle: Text(
+                      origin.address,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                          fontSize: 16,
+                          color: Colors.white70,
+                          fontWeight: FontWeight.bold),
                     ),
                   ),
-                  HDividerWidget(),
-                  SizedBox(height: 5),
-                  Container(
-                    height: 40,
-                    child: OutlinedButton(
-                      style: OutlinedButton.styleFrom(
-                        side: BorderSide(
-                          color: kPrimaryColor,
-                          width: 1.5,
-                        ),
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12)),
+                ),
+                HDividerWidget(),
+                Container(
+                  height: 70,
+                  width: MediaQuery.of(context).size.width,
+                  child: ListTile(
+                    title: Text('destination',
+                        style: TextStyle(color: Colors.red)),
+                    subtitle: Text(
+                      destination.address,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                          fontSize: 16,
+                          color: Colors.white70,
+                          fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                ),
+                HDividerWidget(),
+                SizedBox(height: 5),
+                Container(
+                  height: 40,
+                  child: OutlinedButton(
+                    style: OutlinedButton.styleFrom(
+                      side: BorderSide(
+                        color: kPrimaryColor,
+                        width: 1.5,
                       ),
-                      onPressed: () async {
-                        setState(() => showSpinner = true);
-                        try {
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12)),
+                    ),
+                    onPressed: () async {
+                      setState(() => showSpinner = true);
+                      try {
+                        String bookingId = data.currentBookingId;
+                        if (bookingId == null) {
                           final DateTime now = DateTime.now();
                           final DateFormat formatter =
                               DateFormat('yyyy-MM-dd hh:mm:ss');
@@ -221,6 +218,7 @@ class _ConfirmScreenState extends State<ConfirmScreen> {
                             'destinationId': destination.placeId,
                             'destinationAddress': destination.address
                           };
+                          data.setBookingId = formatted;
                           bookingRef
                               .child(userId)
                               .child(formatted)
@@ -229,32 +227,41 @@ class _ConfirmScreenState extends State<ConfirmScreen> {
                               msg: 'Booking Confirmed!',
                               backgroundColor: Colors.green,
                               gravity: ToastGravity.TOP);
-                        } catch (e) {
-                          print(e);
-                        } finally {
-                          setState(() => showSpinner = false);
+                        } else {
+                          await bookingRef
+                              .child(userId)
+                              .child(bookingId)
+                              .remove();
+                          Fluttertoast.showToast(
+                              msg: 'Booking Cancelled',
+                              backgroundColor: Colors.blueAccent,
+                              gravity: ToastGravity.TOP);
                         }
-                      },
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(
-                            FontAwesomeIcons.thumbsUp,
-                            size: 25,
-                            color: kPrimaryColor,
-                          ),
-                          SizedBox(width: 20),
-                          Text('Request',
-                              style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 20,
-                                  color: kPrimaryColor))
-                        ],
-                      ),
+                      } catch (e) {
+                        print(e);
+                      } finally {
+                        setState(() => showSpinner = false);
+                      }
+                    },
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          FontAwesomeIcons.thumbsUp,
+                          size: 25,
+                          color: kPrimaryColor,
+                        ),
+                        SizedBox(width: 20),
+                        Text(data.bookingText ?? 'Request',
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 20,
+                                color: kPrimaryColor))
+                      ],
                     ),
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
         ),

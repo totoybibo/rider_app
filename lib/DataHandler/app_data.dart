@@ -7,12 +7,27 @@ class AppData extends ChangeNotifier {
   Address _origin;
   Address _destination;
   DirectionDetails _directionDetails;
-  Address get origin => _origin;
-  Address get destination => _destination;
+  Address get origin => _origin ?? Address();
+  Address get destination => _destination ?? Address();
   User get user => _user;
   String userName;
   String get userId => _user.uid;
   DirectionDetails get directionDetails => _directionDetails;
+  String _currentBookingId = '';
+  String get currentBookingId => _currentBookingId ?? '';
+  set setBookingId(String id) {
+    _currentBookingId = id;
+    notifyListeners();
+  }
+
+  String get bookingText {
+    if (_currentBookingId == null || _currentBookingId.isEmpty) {
+      return 'Request';
+    } else {
+      return 'Cancel Request';
+    }
+  }
+
   set setDirectionDetails(DirectionDetails details) {
     _directionDetails = details;
     notifyListeners();

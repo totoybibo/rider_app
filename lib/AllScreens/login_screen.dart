@@ -24,13 +24,16 @@ class _LoginScreenState extends State<LoginScreen>
   AnimationController controller;
   Animation animation;
   FirebaseAuth _auth = FirebaseAuth.instance;
-  String email;
-  String password;
+
   bool showSpinner = false;
+  TextEditingController emailController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
   void loginUser(BuildContext context) async {
     try {
+      String email = emailController.text;
+      String password = passwordController.text;
+      if (email.isEmpty & password.isEmpty) return;
       setState(() => showSpinner = true);
-
       if (email == null || email.isEmpty) throw 'please provide email';
       if (!email.contains('@')) throw 'incorrect email';
       if (password == null || password.isEmpty) throw 'password is empty';
@@ -106,7 +109,7 @@ class _LoginScreenState extends State<LoginScreen>
                 Hero(
                   tag: 'logo',
                   child: Image.asset('images/logo.png',
-                      width: 350, height: 350, alignment: Alignment.center),
+                      width: 300, height: 350, alignment: Alignment.center),
                 ),
                 SizedBox(height: 5),
                 Text(
@@ -116,6 +119,7 @@ class _LoginScreenState extends State<LoginScreen>
                 ),
                 SizedBox(height: 10),
                 TextFormField(
+                  controller: emailController,
                   enableSuggestions: false,
                   autocorrect: false,
                   style: TextStyle(fontSize: 14),
@@ -137,10 +141,11 @@ class _LoginScreenState extends State<LoginScreen>
                       },
                     ),
                   ),
-                  onChanged: (value) => email = value,
+                  onFieldSubmitted: (value) => loginUser(context),
                 ),
                 TextFormField(
-                  onChanged: (value) => password = value,
+                  controller: passwordController,
+                  onFieldSubmitted: (value) => loginUser(context),
                   style: TextStyle(fontSize: 14),
                   obscureText: true,
                   decoration: kLoginInputDecoration.copyWith(

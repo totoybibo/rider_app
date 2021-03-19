@@ -17,7 +17,6 @@ import 'package:rider_app/Models/location_model.dart';
 import 'package:rider_app/PolylinePoints/flutter_polyline_points.dart';
 import 'package:rider_app/Helpers/helper_methods.dart';
 import 'package:rider_app/Helpers/httprequest.dart';
-import 'package:rider_app/main.dart';
 import 'confirm_screen.dart';
 
 class MainScreen extends StatefulWidget {
@@ -32,48 +31,43 @@ class _MainScreenState extends State<MainScreen> {
   GoogleMapController newGoogleMapController;
   bool showSpinner = true;
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  //final User user = FirebaseAuth.instance.currentUser;
   GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
   List<LatLng> pLineCoordinates = [];
   Set<Polyline> polyLineSet = {};
   Geolocator geolocator = Geolocator();
   Set<Marker> markerSet = {};
   Set<Circle> circleSet = {};
-  Function onTap;
-  Address currentLocation;
-  Address destinationLocation;
-  String currentPickUpLocation = '';
-  String destination = '';
-  Position currentPosition;
 
-  bool showBooking = false;
   void locationPosition(BuildContext context) async {
+    bool enabled = await Geolocator.isLocationServiceEnabled();
+    if (!enabled) return;
+    LocationPermission permission = await Geolocator.checkPermission();
+    if (permission != LocationPermission.whileInUse &&
+        permission == LocationPermission.always) {
+      Fluttertoast.showToast(msg: 'Please enable location');
+    }
+
     Position position = await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.high);
-    currentPosition = position;
+    Position currentPosition = position;
     LatLng latLngPosition = LatLng(position.latitude, position.longitude);
     CameraPosition cameraPosition =
         CameraPosition(target: latLngPosition, zoom: 14);
     newGoogleMapController
         .animateCamera(CameraUpdate.newCameraPosition(cameraPosition));
-
     Address location = await HelperMethods.searchCoordinates(position, 'home');
     Provider.of<AppData>(context, listen: false).setOrigin = location;
-    currentLocation = location;
-    setState(() {
-      currentPickUpLocation = currentLocation.address;
-      showSpinner = false;
-    });
+    setState(() => showSpinner = false);
   }
 
   @override
   Widget build(BuildContext context) {
-    User usr = Provider.of<AppData>(context, listen: false).user;
-    String userName = Provider.of<AppData>(context, listen: false).userName;
-
+    AppData data = Provider.of<AppData>(context, listen: false);
+    User usr = data.user;
+    String userName = data.userName;
     return Scaffold(
       appBar: AppBar(
-        toolbarHeight: 75,
+        toolbarHeight: 60,
         backgroundColor: kDarkModeColor,
         leading: RawMaterialButton(
           onPressed: () => Navigator.popAndPushNamed(context, LoginScreen.id),
@@ -90,7 +84,7 @@ class _MainScreenState extends State<MainScreen> {
               '$userName!',
               style: TextStyle(
                   color: Colors.blueAccent,
-                  fontSize: 25,
+                  fontSize: 20,
                   fontWeight: FontWeight.bold),
             ),
             subtitle: Text('Lets book a ride',
@@ -103,166 +97,171 @@ class _MainScreenState extends State<MainScreen> {
       backgroundColor: kDarkModeColor,
       body: ModalProgressHUD(
         inAsyncCall: showSpinner,
-        child: Container(
-          child: Padding(
-            padding: const EdgeInsets.only(left: 20, right: 20, top: 10),
-            child: Column(
-              children: [
-                Column(
-                  children: [
-                    Container(
-                      height: 80,
-                      width: double.infinity,
-                      decoration: BoxDecoration(
-                        border: Border.all(
-                          color: Colors.grey,
-                        ),
-                        borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(16),
-                          topRight: Radius.circular(16),
-                        ),
-                      ),
-                      child: RawMaterialButton(
-                        highlightColor: Colors.blueAccent,
-                        onPressed: () {},
-                        shape: RoundedRectangleBorder(
+        child: Positioned(
+          top: MediaQuery.of(context).viewInsets.top,
+          left: 0,
+          right: 0,
+          child: Container(
+            child: Padding(
+              padding: const EdgeInsets.only(left: 20, right: 20, top: 10),
+              child: Column(
+                children: [
+                  Column(
+                    children: [
+                      Container(
+                        height: 75,
+                        width: double.infinity,
+                        decoration: BoxDecoration(
+                          border: Border.all(
+                            color: Colors.grey,
+                          ),
                           borderRadius: BorderRadius.only(
                             topLeft: Radius.circular(16),
                             topRight: Radius.circular(16),
                           ),
                         ),
-                        child: ListTile(
-                          title: Text('origin'),
-                          subtitle: Text(
-                            currentPickUpLocation,
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 18,
-                                color: Colors.green),
+                        child: RawMaterialButton(
+                          highlightColor: Colors.blueAccent,
+                          onPressed: () {},
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(16),
+                              topRight: Radius.circular(16),
+                            ),
                           ),
-                          trailing: Icon(Icons.my_location,
-                              size: 50, color: Colors.green),
+                          child: ListTile(
+                            title: Text('origin'),
+                            subtitle: Text(
+                              data.origin.address ?? 'loading..',
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 18,
+                                  color: Colors.green),
+                            ),
+                            trailing: Icon(Icons.my_location,
+                                size: 50, color: Colors.green),
+                          ),
                         ),
                       ),
-                    ),
-                    Container(
-                      height: 80,
-                      width: double.infinity,
-                      decoration: BoxDecoration(
-                        border: Border.all(
-                          color: Colors.grey,
-                        ),
-                        borderRadius: BorderRadius.only(
-                          bottomLeft: Radius.circular(16),
-                          bottomRight: Radius.circular(16),
-                        ),
-                      ),
-                      child: RawMaterialButton(
-                        highlightColor: Colors.blueAccent,
-                        onPressed: () async {
-                          setState(() => showSpinner = true);
-                          try {
-                            dynamic dest = await Navigator.pushNamed<dynamic>(
-                                context, DestinationScreen.id);
-                            if (dest == null) return;
-                            PlacePredictions place = dest;
-                            await destinationPosition(context, place);
-                          } catch (e) {
-                            print(e);
-                          } finally {
-                            setState(() => showSpinner = false);
-                          }
-                        },
-                        shape: RoundedRectangleBorder(
+                      Container(
+                        height: 75,
+                        width: double.infinity,
+                        decoration: BoxDecoration(
+                          border: Border.all(
+                            color: Colors.grey,
+                          ),
                           borderRadius: BorderRadius.only(
                             bottomLeft: Radius.circular(16),
                             bottomRight: Radius.circular(16),
                           ),
                         ),
-                        child: ListTile(
-                          title: Text('destination'),
-                          subtitle: Text(
-                            destination ?? '',
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 18,
-                                color: kPrimaryColor),
+                        child: RawMaterialButton(
+                          highlightColor: Colors.blueAccent,
+                          onPressed: () async {
+                            setState(() => showSpinner = true);
+                            try {
+                              dynamic dest = await Navigator.pushNamed<dynamic>(
+                                  context, DestinationScreen.id);
+                              if (dest == null) return;
+                              PlacePredictions place = dest;
+                              await destinationPosition(context, place);
+                            } catch (e) {
+                              print(e);
+                            } finally {
+                              setState(() => showSpinner = false);
+                            }
+                          },
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.only(
+                              bottomLeft: Radius.circular(16),
+                              bottomRight: Radius.circular(16),
+                            ),
                           ),
-                          trailing: Icon(
-                            Icons.location_pin,
-                            size: 50,
-                            color: Colors.red,
+                          child: ListTile(
+                            title: Text('destination'),
+                            subtitle: Text(
+                              data.destination.address ?? 'select destination',
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 18,
+                                  color: kPrimaryColor),
+                            ),
+                            trailing: Icon(
+                              Icons.location_pin,
+                              size: 50,
+                              color: Colors.red,
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                  ],
-                ),
-                SizedBox(height: 8),
-                Container(
-                  padding: EdgeInsets.all(5),
-                  height: MediaQuery.of(context).size.height / 2,
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    border: Border.all(
-                      color: Colors.grey,
-                    ),
-                    borderRadius: BorderRadius.all(Radius.circular(12)),
+                    ],
                   ),
-                  child: GoogleMap(
-                    zoomControlsEnabled: true,
-                    markers: markerSet,
-                    circles: circleSet,
-                    polylines: polyLineSet,
-                    myLocationEnabled: true,
-                    initialCameraPosition: MainScreen._kLocationPosition,
-                    myLocationButtonEnabled: false,
-                    onMapCreated: (GoogleMapController controller) {
-                      gMapController.complete(controller);
-                      newGoogleMapController = controller;
-                      locationPosition(context);
-                    },
-                  ),
-                ),
-                SizedBox(height: 8),
-                Container(
-                  height: 50,
-                  child: RawMaterialButton(
-                    highlightColor: Colors.lightBlueAccent,
-                    fillColor: Colors.blueGrey,
-                    onPressed: () {
-                      if (destination.isEmpty) {
-                        Fluttertoast.showToast(
-                            msg: 'Please select destination',
-                            backgroundColor: Colors.blueAccent,
-                            gravity: ToastGravity.CENTER);
-                      } else {
-                        Navigator.pushNamed(context, ConfirmScreen.id);
-                      }
-                    },
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
+                  SizedBox(height: 6),
+                  Container(
+                    padding: EdgeInsets.all(5),
+                    height: MediaQuery.of(context).size.height / 2,
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      border: Border.all(
+                        color: Colors.grey,
+                      ),
+                      borderRadius: BorderRadius.all(Radius.circular(12)),
                     ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        Icon(FontAwesomeIcons.check, color: Colors.white),
-                        Text('Confirm',
-                            style: TextStyle(
-                                fontSize: 20,
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold)),
-                        Icon(FontAwesomeIcons.taxi, color: Colors.white)
-                      ],
+                    child: GoogleMap(
+                      zoomControlsEnabled: true,
+                      markers: markerSet,
+                      circles: circleSet,
+                      polylines: polyLineSet,
+                      myLocationEnabled: true,
+                      initialCameraPosition: MainScreen._kLocationPosition,
+                      myLocationButtonEnabled: false,
+                      onMapCreated: (GoogleMapController controller) {
+                        gMapController.complete(controller);
+                        newGoogleMapController = controller;
+                        locationPosition(context);
+                      },
                     ),
                   ),
-                )
-              ],
+                  SizedBox(height: 6),
+                  Container(
+                    height: 50,
+                    child: RawMaterialButton(
+                      highlightColor: Colors.lightBlueAccent,
+                      fillColor: Colors.blueGrey,
+                      onPressed: () {
+                        if (data.destination.address.isEmpty) {
+                          Fluttertoast.showToast(
+                              msg: 'Please select destination',
+                              backgroundColor: Colors.blueAccent,
+                              gravity: ToastGravity.CENTER);
+                        } else {
+                          Navigator.pushNamed(context, ConfirmScreen.id);
+                        }
+                      },
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          Icon(FontAwesomeIcons.check, color: Colors.white),
+                          Text('Confirm',
+                              style: TextStyle(
+                                  fontSize: 20,
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold)),
+                          Icon(FontAwesomeIcons.taxi, color: Colors.white)
+                        ],
+                      ),
+                    ),
+                  )
+                ],
+              ),
             ),
           ),
         ),
@@ -293,7 +292,7 @@ class _MainScreenState extends State<MainScreen> {
 
       Address address =
           await HelperMethods.searchCoordinates(position, 'destination');
-      setState(() => destination = place.mainText);
+
       Provider.of<AppData>(context, listen: false).setDestination = address;
 
       CameraPosition cameraPosition =

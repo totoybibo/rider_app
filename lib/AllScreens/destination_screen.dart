@@ -36,9 +36,12 @@ class _DestinationScreenState extends State<DestinationScreen> {
     getUser();
     getFavorites();
     KeyboardVisibilityNotification().addNewListener(
-      onChange: (bool visible) => keyBoardHeight = visible ? 4 : 2,
+      onChange: (bool visible) => setHeightValue(visible),
     );
   }
+
+  void setHeightValue(bool visible) =>
+      setState(() => keyBoardHeight = visible ? 4 : 2);
 
   void getFavorites() async {
     await favRef.child(user.uid).onChildAdded.forEach((element) {
@@ -87,8 +90,9 @@ class _DestinationScreenState extends State<DestinationScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: true,
       appBar: AppBar(
-        toolbarHeight: 75,
+        toolbarHeight: 40,
         backgroundColor: kDarkModeColor,
         leading: RawMaterialButton(
           onPressed: () => Navigator.pop(context),
@@ -118,11 +122,12 @@ class _DestinationScreenState extends State<DestinationScreen> {
       ),
       body: ModalProgressHUD(
         inAsyncCall: showSpinner,
-        child: Padding(
+        child: Container(
           padding: const EdgeInsets.all(8.0),
           child: Column(
             children: [
               TextField(
+                keyboardType: TextInputType.text,
                 style: TextStyle(
                     color: Colors.white70, fontWeight: FontWeight.bold),
                 onChanged: (value) {
@@ -181,6 +186,7 @@ class _DestinationScreenState extends State<DestinationScreen> {
                   highlightColor: Colors.lightBlueAccent,
                   fillColor: Colors.blueGrey,
                   onPressed: () {
+                    setState(() => showSpinner = true);
                     Navigator.pop(context, selectedPlace);
                   },
                   shape: RoundedRectangleBorder(

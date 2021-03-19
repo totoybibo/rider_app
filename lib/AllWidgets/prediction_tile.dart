@@ -15,7 +15,7 @@ class PredictionTile extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         RawMaterialButton(
-          constraints: BoxConstraints.tightFor(width: 50, height: 50),
+          constraints: BoxConstraints.tightFor(width: 40, height: 40),
           onPressed: () => onFavePressed(prediction, isFavorite),
           shape: CircleBorder(),
           child: ThemedIcon(
@@ -30,8 +30,12 @@ class PredictionTile extends StatelessWidget {
           onPressed: () => onTap(prediction),
           child: Container(
             width: MediaQuery.of(context).size.width - 80,
-            child: Text(prediction.mainText,
-                style: TextStyle(color: Colors.blueAccent)),
+            child: Text(
+              prediction.mainText,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(color: Colors.blueAccent),
+            ),
           ),
         )
       ],
