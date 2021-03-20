@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:rider_app/DataHandler/app_data.dart';
 import 'package:rider_app/AllWidgets/component_widgets.dart';
+import 'package:provider/provider.dart';
 
 class MainScreenDrawer extends StatelessWidget {
-  final String username;
-  final User user;
   final Function signOut;
-  MainScreenDrawer({this.username, this.user, this.signOut});
+
+  MainScreenDrawer({this.signOut});
   @override
   Widget build(BuildContext context) {
+    AppData data = Provider.of<AppData>(context, listen: false);
+    String userId = data.userId;
+    String userName = data.userName;
     return Container(
       width: MediaQuery.of(context).size.width / 3 * 2,
       child: Drawer(
@@ -28,10 +31,10 @@ class MainScreenDrawer extends StatelessWidget {
                     children: [
                       Image.asset('images/user_icon.png',
                           width: 100, height: 100),
-                      Text(username,
+                      Text(userName,
                           style: TextStyle(
                               fontSize: 20, fontWeight: FontWeight.bold)),
-                      Text(user.email,
+                      Text(data.user.email,
                           style: TextStyle(fontSize: 16, color: Colors.grey))
                     ],
                   ),

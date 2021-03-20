@@ -203,42 +203,40 @@ class _ConfirmScreenState extends State<ConfirmScreen> {
                     onPressed: () async {
                       setState(() => showSpinner = true);
                       try {
-                        String bookingId = data.currentBookingId;
-                        if (bookingId == null) {
-                          final DateTime now = DateTime.now();
-                          final DateFormat formatter =
-                              DateFormat('yyyy-MM-dd hh:mm:ss');
-                          final String formatted = formatter.format(now);
-                          Map booking = {
-                            'distance': distance,
-                            'modeOfPaymet': payment.index.toString(),
-                            'amount': fare,
-                            'originId': origin.placeId,
-                            'originAddress': origin.address,
-                            'destinationId': destination.placeId,
-                            'destinationAddress': destination.address
-                          };
-                          data.setBookingId = formatted;
-                          bookingRef
-                              .child(userId)
-                              .child(formatted)
-                              .set(booking);
-                          Fluttertoast.showToast(
-                              msg: 'Booking Confirmed!',
-                              backgroundColor: Colors.green,
-                              gravity: ToastGravity.TOP);
-                        } else {
-                          await bookingRef
-                              .child(userId)
-                              .child(bookingId)
-                              .remove();
-                          Fluttertoast.showToast(
-                              msg: 'Booking Cancelled',
-                              backgroundColor: Colors.blueAccent,
-                              gravity: ToastGravity.TOP);
+                        Map booking = {};
+                        booking = await bookingRef
+                            .child(userId)
+                            .once()
+                            .then((value) => value.value);
+                        if (booking['status'] == BookingStatus.New.index) {
+                          throw 'You already have a pending request!';
                         }
+                        final DateTime now = DateTime.now();
+                        final DateFormat formatter =
+                            DateFormat('yyyy-MM-dd hh:mm:ss');
+                        final String formatted = formatter.format(now);
+                        booking = {
+                          'distance': distance,
+                          'modeOfPaymet': payment.index.toString(),
+                          'amount': fare,
+                          'cardNumber': controller.text,
+                          'status': 0,
+                          'originId': origin.placeId,
+                          'originAddress': origin.address,
+                          'destinationId': destination.placeId,
+                          'destinationAddress': destination.address,
+                          'bookingDate': formatted
+                        };
+                        bookingRef.child(userId).set(booking);
+                        Fluttertoast.showToast(
+                            msg: 'Booking Confirmed!',
+                            backgroundColor: Colors.green,
+                            gravity: ToastGravity.TOP);
                       } catch (e) {
-                        print(e);
+                        Fluttertoast.showToast(
+                            msg: e,
+                            gravity: ToastGravity.CENTER,
+                            backgroundColor: Colors.blueAccent);
                       } finally {
                         setState(() => showSpinner = false);
                       }
@@ -252,7 +250,7 @@ class _ConfirmScreenState extends State<ConfirmScreen> {
                           color: kPrimaryColor,
                         ),
                         SizedBox(width: 20),
-                        Text(data.bookingText ?? 'Request',
+                        Text('Request',
                             style: TextStyle(
                                 fontWeight: FontWeight.bold,
                                 fontSize: 20,

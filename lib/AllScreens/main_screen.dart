@@ -18,6 +18,7 @@ import 'package:rider_app/PolylinePoints/flutter_polyline_points.dart';
 import 'package:rider_app/Helpers/helper_methods.dart';
 import 'package:rider_app/Helpers/httprequest.dart';
 import 'confirm_screen.dart';
+import 'package:rider_app/AllWidgets/main_screen_drawer.dart';
 
 class MainScreen extends StatefulWidget {
   static const id = 'main';
@@ -68,6 +69,9 @@ class _MainScreenState extends State<MainScreen> {
     User usr = data.user;
     String userName = data.userName;
     return Scaffold(
+      key: scaffoldKey,
+      drawer: MainScreenDrawer(
+          signOut: () => Navigator.popAndPushNamed(context, LoginScreen.id)),
       appBar: AppBar(
         toolbarHeight: 60,
         backgroundColor: kDarkModeColor,
@@ -95,7 +99,13 @@ class _MainScreenState extends State<MainScreen> {
             subtitle: Text('Lets book a ride',
                 style: TextStyle(
                     color: Colors.white, fontWeight: FontWeight.bold)),
-            trailing: Image.asset('images/user_icon.png'),
+            trailing: RawMaterialButton(
+              highlightColor: Colors.blueAccent,
+              shape: CircleBorder(
+                  side: BorderSide(color: kPrimaryColor, width: 2)),
+              onPressed: () => scaffoldKey.currentState.openDrawer(),
+              child: Image.asset('images/user_icon.png'),
+            ),
           ),
         ),
       ),
