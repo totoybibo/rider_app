@@ -177,7 +177,7 @@ class _ConfirmScreenState extends State<ConfirmScreen> {
                     title: Text('destination',
                         style: TextStyle(color: Colors.red)),
                     subtitle: Text(
-                      destination.address,
+                      destination.name,
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(

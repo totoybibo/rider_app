@@ -55,10 +55,14 @@ class _DestinationScreenState extends State<DestinationScreen> {
 
   void findPlaces(String value) async {
     List<PlacePredictions> _list = [];
+    String baseURL =
+        'https://maps.googleapis.com/maps/api/place/autocomplete/json?';
     if (controller.text.length > 4) {
-      String urlAutoComplete =
-          'https://maps.googleapis.com/maps/api/place/autocomplete/json?input=${controller.text}&key=$googleMapKey&sessiontoken=123456789&components=country:SG';
-      dynamic resp = await HTTPRequest.getRequest(urlAutoComplete);
+      String url =
+          '${baseURL}input=${controller.text}&types=geocode&key=$googleMapKey&sessiontoken=123456789&components=country:SG';
+
+      dynamic resp = await HTTPRequest.getRequest(url);
+
       if (resp['status'] == 'OK') {
         dynamic predictions = resp['predictions'];
         dynamic placeList = (predictions as List)
@@ -175,6 +179,17 @@ class _DestinationScreenState extends State<DestinationScreen> {
                   onTap: (PlacePredictions value) {
                     controller.text = value.mainText;
                     selectedPlace = value;
+                  },
+                  onFavorite: (PlacePredictions value, bool favorite) {
+                    value.isFavorite = !value.isFavorite;
+                    if (value.isFavorite) {
+                      Map data = {'name': value.mainText};
+                      favRef.child(user.uid).child(value.placeId).set(data);
+                    } else {
+                      favRef.child(user.uid).child(value.placeId).remove();
+                      Future.delayed(const Duration(seconds: 1));
+                      setState(() => list.removeAt(value.index));
+                    }
                   },
                   list: list.isNotEmpty ? list : faveList,
                 ),

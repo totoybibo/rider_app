@@ -6,10 +6,14 @@ import 'package:rider_app/main.dart';
 
 class PlaceListTab extends StatelessWidget {
   final Function onTap;
+  final Function onFavorite;
   final List<PlacePredictions> list;
   final String userId;
   PlaceListTab(
-      {@required this.onTap, @required this.list, @required this.userId});
+      {@required this.onTap,
+      @required this.onFavorite,
+      @required this.list,
+      @required this.userId});
 
   @override
   Widget build(BuildContext context) {
@@ -19,18 +23,10 @@ class PlaceListTab extends StatelessWidget {
       separatorBuilder: (context, index) => HDividerWidget(),
       itemBuilder: (context, index) {
         PlacePredictions place = list[index];
+        place.index = index;
         return PredictionTile(
+            onFavePressed: onFavorite,
             isFavorite: place.isFavorite,
-            onFavePressed: (PlacePredictions value, bool favorite) {
-              place.isFavorite = !favorite;
-              if (place.isFavorite) {
-                Map data = {'name': value.mainText};
-                favRef.child(userId).child(value.placeId).set(data);
-              } else {
-                favRef.child(userId).child(value.placeId).remove();
-                list.removeAt(index);
-              }
-            },
             prediction: place,
             onTap: onTap);
       },

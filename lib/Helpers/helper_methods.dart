@@ -13,6 +13,7 @@ class HelperMethods {
     String url =
         'https://maps.googleapis.com/maps/api/geocode/json?latlng=${position.latitude},${position.longitude}&key=AIzaSyA_35szt8lTca-sbzbp8wx9LTk72MU0S48';
     dynamic response = await HTTPRequest.getRequest(url);
+
     if (response == 'nodata') {
       address = 'Address Unknown';
     } else {

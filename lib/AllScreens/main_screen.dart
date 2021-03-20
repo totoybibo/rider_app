@@ -55,8 +55,10 @@ class _MainScreenState extends State<MainScreen> {
         CameraPosition(target: latLngPosition, zoom: 14);
     newGoogleMapController
         .animateCamera(CameraUpdate.newCameraPosition(cameraPosition));
-    Address location = await HelperMethods.searchCoordinates(position, 'home');
+    Address location =
+        await HelperMethods.searchCoordinates(position, 'Current Location');
     Provider.of<AppData>(context, listen: false).setOrigin = location;
+
     setState(() => showSpinner = false);
   }
 
@@ -70,7 +72,10 @@ class _MainScreenState extends State<MainScreen> {
         toolbarHeight: 60,
         backgroundColor: kDarkModeColor,
         leading: RawMaterialButton(
-          onPressed: () => Navigator.popAndPushNamed(context, LoginScreen.id),
+          onPressed: () {
+            data.setDestination = Address();
+            Navigator.popAndPushNamed(context, LoginScreen.id);
+          },
           shape: CircleBorder(),
           child: Icon(
             Icons.arrow_back_ios,
@@ -182,7 +187,7 @@ class _MainScreenState extends State<MainScreen> {
                           child: ListTile(
                             title: Text('destination'),
                             subtitle: Text(
-                              data.destination.address ?? 'select destination',
+                              data.destination.name ?? 'select destination',
                               maxLines: 2,
                               overflow: TextOverflow.ellipsis,
                               style: TextStyle(
@@ -281,7 +286,7 @@ class _MainScreenState extends State<MainScreen> {
     String url =
         'https://maps.googleapis.com/maps/api/place/details/json?place_id=${place.placeId}&fields=geometry&key=$googleMapKey';
     dynamic resp = await HTTPRequest.getRequest(url);
-    print(resp['result']);
+
     if (resp['status'] == 'OK') {
       double lat = resp['result']['geometry']['location']['lat'];
       double lng = resp['result']['geometry']['location']['lng'];
@@ -291,7 +296,7 @@ class _MainScreenState extends State<MainScreen> {
           longitude: latLngPosition.longitude);
 
       Address address =
-          await HelperMethods.searchCoordinates(position, 'destination');
+          await HelperMethods.searchCoordinates(position, place.mainText);
 
       Provider.of<AppData>(context, listen: false).setDestination = address;
 
